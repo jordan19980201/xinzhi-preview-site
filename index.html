@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>信誌科技 網站改版預覽</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* 預覽入口頁：只用來分享預覽，不是正式網站的一部分 */
+  :root { --ink: #1d1d1f; --muted: #6e6e73; --line: #d2d2d7; --gold-ink: #7a5f35; --blue: #0a66e0;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro TC", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: #fff; color: var(--ink); font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .bar { background: #232325; height: 44px; display: flex; align-items: center; }
+  .bar .wrap { width: 100%; }
+  .bar img { height: 26px; display: block; }
+  header { padding: clamp(48px, 10vh, 96px) 0 32px; }
+  .k { font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--gold-ink); }
+  h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.2; margin-top: 10px; }
+  h1 span { display: inline-block; }
+  .sub { color: var(--muted); margin-top: 14px; max-width: 34em; }
+  ol { list-style: none; border-top: 1px solid var(--line); margin-bottom: 64px; }
+  li { display: grid; grid-template-columns: 48px 1fr auto; gap: 4px 20px; align-items: baseline; padding: 28px 0; border-bottom: 1px solid var(--line); }
+  .n { font-size: 28px; font-weight: 700; color: var(--gold-ink); line-height: 1; }
+  h2 { font-size: 24px; }
+  li p { color: var(--muted); font-size: 15px; grid-column: 2; }
+  .go { grid-row: 1 / span 2; grid-column: 3; display: flex; gap: 12px; align-items: center; }
+  .btn { display: inline-block; background: var(--ink); color: #fff; font-weight: 700; font-size: 15px; padding: 10px 20px; border-radius: 10px; text-decoration: none; }
+  .link { color: var(--blue); font-size: 15px; font-weight: 500; text-decoration: none; }
+  .btn:focus-visible, .link:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .how { font-size: 14px; color: var(--muted); padding-bottom: 48px; }
+  @media (max-width: 680px) {
+    li { grid-template-columns: 36px 1fr; }
+    .n { font-size: 22px; }
+    .go { grid-row: auto; grid-column: 2; margin-top: 12px; }
+    .go .link { display: none; }  /* 手機上不需要手機框 */
+  }
+</style>
+<link rel="stylesheet" href="editorial.css">
+</head>
+<body>
+  <div class="bar"><div class="wrap"><img src="company/assets/ti-lockup-gold.svg" alt="信誌科技 T-Intelligence"></div></div>
+  <main class="wrap">
+    <header>
+      <p class="k">網站改版預覽 ・ 尚未上線</p>
+      <h1><span>信誌科技</span> <span>網站改版預覽</span></h1>
+      <p class="sub">供內部確認樣式用，和正式網站分開，不影響正式網站。左右翻頁：電腦用滾輪、方向鍵或右下角按鈕，手機左右滑。三個網站都是同一套新設計：開場是一座會動的城市，點城市裡的角落就像看一部短片一樣看產品故事。</p>
+    </header>
+    <ol>
+      <li><span class="n">1</span><h2>信誌科技 官網</h2><p>城市首頁（點學校、辦公大樓看故事）、2026 實績、關於、聯絡</p>
+        <span class="go"><a class="btn" href="v5/company/">開啟</a><a class="link" href="v5/company/mobile.html">手機框檢視</a></span></li>
+      <li><span class="n">2</span><h2>T-Patrol 平安福</h2><p>城市裡的學校：校外教學的一天、老師最怕的事、裝置、系統、實績、免費試辦</p>
+        <span class="go"><a class="btn" href="v5/t-patrol/">開啟</a><a class="link" href="v5/t-patrol/mobile.html">手機框檢視</a></span></li>
+      <li><span class="n">3</span><h2>T-Vouch</h2><p>城市裡的辦公大樓：一張發票的旅程、自己試一次、三步驟、方案</p>
+        <span class="go"><a class="btn" href="v5/t-vouch/">開啟</a><a class="link" href="v5/t-vouch/mobile.html">手機框檢視</a></span></li>
+    </ol>
+    <p class="how">「手機框檢視」是在電腦上模擬手機畫面；用手機開這個網址，直接按「開啟」即可。聯絡表單在預覽版不會送出。</p>
+  </main>
+</body>
+</html>

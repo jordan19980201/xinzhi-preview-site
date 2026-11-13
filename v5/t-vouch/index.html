@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="../favicon.png">
+<script>
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (!t) { var h = new Date().getHours(); t = h >= 6 && h < 18 ? 'paper' : 'night'; }
+    if (t === 'paper') document.documentElement.dataset.theme = t;
+  })();
+</script>
+<title>T-Vouch｜AI 智慧憑證辨識</title>
+<meta name="description" content="拍照即辨識。T-Vouch 運用 AI 自動辨識發票、收據等會計憑證，擷取關鍵欄位資料。免費方案每月 50 張，無需信用卡。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../v5.css">
+<link rel="stylesheet" href="../story.css">
+<style>
+/* T-Vouch 產品網站（v5）。設計依據：_preview/design-system/t-vouch/pages/product-site.md
+   章節：開場（城市裡的辦公大樓）→ 自己試一次 → 三步驟 → 方案（ui-ux-pro-max Pricing：標出適合的方案、寫出年繳實際省多少）→ 開始。 */
+
+/* 02 試試看：一張發票、一顆按鈕 */
+.p-try { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--s-7); align-items: center; }
+.p-try h2 { font-size: clamp(2.2rem, min(4.4vw, 9vh), 4.6rem); line-height: 1.12; }
+.p-try .lead { margin-top: var(--s-4); }
+.ocr { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-6); align-items: center; }
+.ocr .einv { --ei-w: clamp(220px, min(19vw, 36vh), 270px); }
+.fields { display: grid; gap: var(--s-4); }
+.fields div { display: grid; grid-template-columns: 4.5em 1fr; align-items: baseline; gap: var(--s-3); border-bottom: 2px solid var(--ink); padding-bottom: var(--s-2); opacity: .22; transform: translateX(-10px); transition: opacity 400ms var(--ease), transform 400ms var(--ease); }
+.fields dt { font-weight: 700; color: var(--ink-2); }
+.fields dd { font-size: clamp(1.2rem, 1.9vw, var(--t-xl)); white-space: nowrap; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.read .fields div { opacity: 1; transform: none; }
+.read .fields div:nth-child(2) { transition-delay: 120ms; } .read .fields div:nth-child(3) { transition-delay: 240ms; }
+.ocr .act { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); }
+.ocr .act small { color: var(--ink-2); }
+.ocr .status { font-weight: 700; color: var(--ink-2); min-height: 1.7em; }
+
+/* 03 三步驟：一條輸送帶，功能掛在每一站下面 */
+.p-how { display: grid; grid-template-rows: auto 1fr auto; gap: var(--s-6); }
+.p-how h2 { font-size: var(--t-2xl); line-height: 1.25; }
+.p-how h2 + p { color: var(--ink-2); margin-top: var(--s-2); }
+.belt { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); align-self: center; }
+.belt::before { content: ""; position: absolute; left: 0; right: 0; top: 22px; height: 3px; background: var(--ink); transform-origin: left; }
+.in .belt::before { animation: draw 1100ms var(--ease) both; }
+.belt .slip { position: absolute; top: 9px; left: 0; width: 22px; height: 28px; background: var(--paper); border-radius: 2px; box-shadow: 0 6px 12px -6px var(--shadow); opacity: 0; }
+.in .belt .slip { animation: travel 5.5s var(--ease) 1.2s infinite; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 8% { opacity: 1; } 45% { left: 48%; } 55% { left: 48%; } 92% { opacity: 1; } 100% { left: calc(100% - 22px); opacity: 0; } }
+.stop { padding-right: var(--s-6); }
+.stop .n { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); box-shadow: inset 0 0 0 3px var(--ink); position: relative; }
+.stop .n svg { width: 22px; height: 22px; }
+.stop h3 { margin-top: var(--s-4); font-size: var(--t-xl); line-height: 1.25; }
+.stop > p { margin-top: var(--s-1); color: var(--ink-2); }
+.stop dl { margin-top: var(--s-4); display: grid; gap: var(--s-3); }
+.stop dl div { border-top: 1px solid var(--rule); padding-top: var(--s-3); }
+.stop dt { font-weight: 800; }
+.stop dd { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; }
+.in .stop { animation: fade 600ms var(--ease) both; animation-delay: calc(300ms + var(--i) * 200ms); }
+.secure { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-5); padding: var(--s-4) 0 0; border-top: 2px solid var(--ink); font-weight: 700; }
+.secure svg { width: 20px; height: 20px; }
+.secure span { color: var(--ink-2); font-weight: 500; }
+
+/* 04 方案：先問一個月幾張，再告訴你哪個方案 */
+.p-price { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+.p-price h2 { font-size: var(--t-display); line-height: 1.12; }
+.p-price .lead { margin-top: var(--s-4); }
+.qty { margin-top: var(--s-6); border: 0; }
+.qty legend { font-weight: 700; margin-bottom: var(--s-3); }
+.scale { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); }
+.scale::before { content: ""; position: absolute; left: 0; right: 0; top: 21px; height: 2px; background: var(--rule); }
+.scale label { position: relative; cursor: pointer; display: grid; gap: 8px; justify-items: start; padding-bottom: 4px; }
+.scale input { position: absolute; opacity: 0; width: 44px; height: 44px; margin: 0; cursor: pointer; }
+.scale .dot { width: 44px; height: 44px; display: grid; place-items: center; }
+.scale .dot::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 2px var(--ink-2); transition: transform 250ms var(--ease), background-color 250ms; }
+.scale input:checked + .dot::before { background: var(--hi); box-shadow: 0 0 0 5px color-mix(in oklch, var(--hi) 30%, transparent); transform: scale(1.35); }
+.scale input:focus-visible + .dot { outline: 3px solid var(--ink); outline-offset: 0; border-radius: 50%; }
+.scale b { font-size: var(--t-lg); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.scale small { color: var(--ink-2); font-size: var(--t-sm); }
+.plan { background: var(--paper); color: oklch(0.2 0.012 80); border-radius: 20px; padding: var(--s-6); box-shadow: 0 30px 50px -30px var(--shadow); --ink: oklch(0.2 0.012 80); --ink-2: oklch(0.42 0.012 80); --rule: oklch(0.2 0.012 80 / .12); --btn: oklch(0.2 0.012 80); --btn-ink: #fff; }
+.plan .name { display: flex; align-items: baseline; gap: var(--s-3); font-weight: 800; font-size: var(--t-lg); }
+.plan .name em { font-style: normal; font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 999px; background: #D4A94E; color: oklch(0.2 0.02 80); }
+.plan .price { margin-top: var(--s-3); font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.plan .price small { font-size: 1rem; font-weight: 700; letter-spacing: 0; color: var(--ink-2); margin-left: 6px; }
+.plan .year b { color: var(--ink); }
+.plan .year { margin-top: var(--s-2); color: var(--ink-2); font-weight: 600; min-height: 1.7em; font-variant-numeric: tabular-nums; }
+.plan ul { list-style: none; margin-top: var(--s-5); display: grid; gap: 0; }
+.plan li { padding: 8px 0; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: center; }
+.plan li svg { width: 16px; height: 16px; flex: none; color: oklch(0.5 0.13 150); }
+.plan .btn { margin-top: var(--s-5); }
+.plan.swap > * { animation: fade 400ms var(--ease) both; }
+.p-price .more { margin-top: var(--s-4); color: var(--ink-2); font-size: var(--t-sm); }
+.p-price .more a { color: var(--ink); font-weight: 700; display: inline-flex; align-items: center; min-height: 44px; }
+
+/* 05 開始 */
+.p-go { display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--s-8); align-items: center; }
+.p-go h2 { font-size: var(--t-display); line-height: 1.12; }
+.p-go .lead { margin-top: var(--s-4); }
+.p-go .acts { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); align-items: center; }
+.p-go .stack { position: relative; height: 340px; }
+.p-go .stack .einv { position: absolute; left: 50%; top: 50%; translate: -50% -50%; --ei-w: 200px; }
+.p-go .stack .einv:nth-child(1) { rotate: -12deg; translate: -88% -48%; filter: brightness(.9); }
+.p-go .stack .einv:nth-child(2) { rotate: 9deg; translate: -18% -54%; filter: brightness(.95); }
+.p-go .stack .einv:nth-child(3) { rotate: 0deg; }
+.p-go .stack .ok { position: absolute; right: 18%; top: 14%; width: 64px; height: 64px; border-radius: 50%; background: oklch(0.6 0.14 150); display: grid; place-items: center; box-shadow: 0 12px 24px -10px var(--shadow); }
+.in .stack .ok { animation: pop 600ms var(--ease) 500ms both; }
+@keyframes pop { from { transform: scale(0); } }
+.p-go .stack .ok svg { width: 32px; height: 32px; }
+.p-go .direct { margin-top: var(--s-6); }
+
+@media (min-width: 961px) and (max-height: 820px) {
+  .plan { padding: var(--s-5); }
+  .plan .price { font-size: clamp(2.4rem, 4vw, 3.4rem); }
+  .plan ul { margin-top: var(--s-3); }
+  .plan li { padding: 5px 0; }
+  .plan .btn { margin-top: var(--s-4); min-height: 48px; }
+}
+@media (max-width: 960px) {
+  .p-try, .p-price, .p-go { grid-template-columns: 1fr; gap: var(--s-6); align-content: start; }
+  .belt { grid-template-columns: 1fr; gap: var(--s-6); }
+  .belt::before, .belt .slip { display: none; }
+  .stop { padding: 0; }
+  .p-go .stack { height: 260px; overflow: hidden; }
+}
+@media (max-width: 640px) {
+  .ocr { grid-template-columns: 1fr; gap: var(--s-6); justify-items: start; }
+  .scale b { font-size: 1rem; }
+  .plan { padding: var(--s-5); }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#hello">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><i></i></div>
+
+<header class="top">
+  <a class="crumb" href="../company/" aria-label="回到信誌科技城市（官網）"><img class="lg-dark" src="../../company/assets/ti-lockup-gold.svg" alt="" width="126" height="26"><img class="lg-light" src="../../company/assets/ti-lockup-black.svg" alt="" width="126" height="26"><i class="sep" aria-hidden="true"></i><span class="mark t-vouch" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>T-Vouch</a>
+  <nav aria-label="T-Vouch 章節">
+    <button type="button" data-to="try">試試看</button>
+    <button type="button" data-to="how">怎麼運作</button>
+    <button type="button" data-to="pricing">方案</button>
+    <button type="button" data-to="go">開始</button>
+    <a class="login" href="https://app.t-vouch.com/login">登入</a>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- 01 開場：城市裡的辦公大樓 -->
+  <section class="page p-hello" id="hello" aria-labelledby="h-hello" data-name="開始">
+    <div class="copy">
+      <p class="brand"><span class="mark t-vouch" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span>T-Vouch<small>AI 智慧憑證辨識</small></span></p>
+      <h1 id="h-hello"><span class="ln"><span class="nw">拍照即辨識，</span></span><span class="ln"><span class="nw">會計憑證數位化。</span></span></h1>
+      <p class="intro">AI 自動辨識發票、收據等會計憑證，擷取關鍵欄位資料，大幅減少人工輸入時間與錯誤率。</p>
+      <div class="acts">
+        <a class="btn" href="https://app.t-vouch.com/register">免費開始使用</a>
+        <button class="go" type="button" data-story="vouch">看一張發票的旅程</button>
+        <button class="go" type="button" data-video="../../t-vouch/assets/video/tvouch.mp4" data-poster="../../t-vouch/assets/video/tvouch.jpg">16 秒影片</button>
+      </div>
+      <p class="fine">免費方案每月 50 張，無需信用卡</p>
+    </div>
+    <canvas class="city" aria-hidden="true"></canvas>
+    <button class="pin" type="button" data-story="vouch"><span class="tile t-vouch" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="txt"><b>會計部・月底</b><span>點我看一張發票的旅程</span></span></button>
+    <section class="story" hidden aria-labelledby="story-title"></section>
+  </section>
+
+  <!-- 02 試試看 -->
+  <section class="page p-try" id="try" aria-labelledby="h-try" data-name="自己試一次">
+    <div>
+      <h2 id="h-try"><span class="nw">按一下，</span><br><span class="nw">欄位自己讀出來。</span></h2>
+      <p class="lead">看 AI 把日期、統編、金額讀出來。不用再一張一張打字輸入。</p>
+    </div>
+    <div class="ocr js-try">
+      <div class="js-einv" data-ocr></div>
+      <dl class="fields"><div><dt>日期</dt><dd>2026/10/16</dd></div><div><dt>賣方統編</dt><dd>53880413</dd></div><div><dt>金額</dt><dd>NT$ 1,280</dd></div></dl>
+      <div class="act"><button class="btn js-run" type="button">開始辨識</button><p class="status js-status" role="status">按下「開始辨識」看結果</p></div>
+      <p class="sv-note" style="grid-column:1/-1">示意資料，非實際系統畫面</p>
+    </div>
+  </section>
+
+  <!-- 03 三步驟 -->
+  <section class="page p-how" id="how" aria-labelledby="h-how" data-name="怎麼運作">
+    <div><h2 id="h-how">三步驟，完成憑證辨識。</h2><p>專為台灣中小企業設計，從上傳、辨識到匯出一次完成。</p></div>
+    <div class="belt">
+      <span class="slip" aria-hidden="true"></span>
+      <div class="stop" style="--i:0"><span class="n" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span><h3>上傳憑證</h3><p>拍照或上傳發票、收據圖片。</p>
+        <dl><div><dt>批量上傳</dt><dd>一次上傳多張憑證同步辨識，支援 JPG、PNG、PDF。</dd></div><div><dt>多種憑證類型</dt><dd>統一發票、電子發票、收據、費用報告等台灣憑證。</dd></div></dl></div>
+      <div class="stop" style="--i:1"><span class="n" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg></span><h3>AI 辨識</h3><p>AI 自動擷取欄位資料。</p>
+        <dl><div><dt>AI 智慧辨識</dt><dd>自動擷取發票號碼、金額、日期、品項等關鍵欄位。</dd></div></dl></div>
+      <div class="stop" style="--i:2"><span class="n" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span><h3>匯出使用</h3><p>確認結果後匯出 CSV，或透過 API 取用。</p>
+        <dl><div><dt>資料匯出</dt><dd>辨識結果匯出 CSV，輕鬆匯入會計軟體或 ERP。</dd></div><div><dt>API 串接</dt><dd>提供 RESTful API，整合至現有財務系統或流程。</dd></div></dl></div>
+    </div>
+    <p class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>安全加密<span>TLS 傳輸加密・雲端加密儲存・角色權限管理</span></p>
+  </section>
+
+  <!-- 04 方案 -->
+  <section class="page p-price" id="pricing" aria-labelledby="h-price" data-name="方案">
+    <div>
+      <h2 id="h-price"><span class="nw">透明定價，</span><br><span class="nw">按需付費。</span></h2>
+      <p class="lead">年繳只付 10 個月。</p>
+      <fieldset class="qty">
+        <legend>你們一個月大約幾張？</legend>
+        <div class="scale">
+          <label><input type="radio" name="qty" value="free"><span class="dot" aria-hidden="true"></span><b>50 張</b><small>以內</small></label>
+          <label><input type="radio" name="qty" value="starter"><span class="dot" aria-hidden="true"></span><b>300 張</b><small>以內</small></label>
+          <label><input type="radio" name="qty" value="pro" checked><span class="dot" aria-hidden="true"></span><b>1,000 張</b><small>以內</small></label>
+          <label><input type="radio" name="qty" value="biz"><span class="dot" aria-hidden="true"></span><b>5,000 張</b><small>以內</small></label>
+        </div>
+      </fieldset>
+      <p class="more">需要更大量？<a href="../company/?subject=T-Vouch#talk">聯絡我們洽談企業方案</a></p>
+    </div>
+    <div class="plan js-plan" aria-live="polite"></div>
+  </section>
+
+  <!-- 05 開始 -->
+  <section class="page p-go" id="go" aria-labelledby="h-go" data-name="開始使用">
+    <div>
+      <h2 id="h-go"><span class="nw">準備好讓 AI</span><br><span class="nw">處理您的憑證了嗎？</span></h2>
+      <p class="lead">免費方案無需信用卡，立即體驗 AI 憑證辨識。</p>
+      <div class="acts"><a class="btn" href="https://app.t-vouch.com/register">免費開始使用</a><a class="go" href="../company/?subject=T-Vouch#talk">聯絡我們</a></div>
+      <div class="direct"><a href="mailto:support@t-vouch.com">support@t-vouch.com</a><a href="tel:+88635619943">(03) 561-9943</a><p>新竹市光復路二段101號 清華大學創新育成大樓720室</p></div>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="js-einv" data-no="EF-33019264" data-total="2,450" data-seed="31" data-rnd="0537" data-shop="示範文具行"></div>
+      <div class="js-einv" data-no="CD-20481937" data-total="360" data-seed="19" data-rnd="1196" data-shop="示範餐飲"></div>
+      <div class="js-einv" data-seed="7"></div>
+      <span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+    </div>
+    <p class="legal"><span>© 2026 信誌科技股份有限公司</span><a href="https://t-vouch.com/privacy">隱私權政策</a><a href="https://t-vouch.com/terms">服務條款</a><a href="https://t-vouch.com/refund">退款政策</a><a href="../t-patrol/">也看看 T-Patrol</a></p>
+  </section>
+</main>
+
+<div class="pager">
+  <button class="prev" type="button" aria-label="上一頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <button class="next" type="button"><span class="js-next-label">下一頁</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<script src="../company/city.js"></script>
+<script src="../stories.js"></script>
+<script src="../v5.js"></script>
+<script>
+(function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  V5.init({
+    spot: 'vouch',
+    home: function (P) { return { x: P.tower.x, y: P.tower.y, z: 3.2, zoom: 1.9 }; },
+    cams: function (P) { return {
+      try: { x: P.tower.x + .8, y: P.tower.y, z: 5, zoom: 2.4, papers: 'flow' },
+      how: { x: P.tower.x, y: P.tower.y, z: 2.6, zoom: 1.7, papers: 'flow' },
+      pricing: { x: 7, y: 7, z: 0, zoom: 1.1 },
+      go: { x: P.tower.x, y: P.tower.y, z: 2.4, zoom: 2 }
+    }; },
+    stories: function (P) { var s = window.V5Stories(P, 't-vouch'); return { vouch: s.vouch }; }
+  });
+
+  // 發票（示意）：由 stories.js 的 V5Invoice 產生
+  document.querySelectorAll('.js-einv').forEach(function (el) { var d = el.dataset; el.outerHTML = V5Invoice({ ocr: 'ocr' in d, no: d.no, total: d.total, seed: d.seed ? +d.seed : undefined, rnd: d.rnd, shop: d.shop }); });
+
+  // 試試看：掃描光束 → 欄位亮起
+  var box = document.querySelector('.js-try'), run = box.querySelector('.js-run'), st = box.querySelector('.js-status'), busy = false;
+  run.addEventListener('click', function () {
+    if (busy) return;
+    if (box.classList.contains('read')) { box.classList.remove('read', 'scan'); run.textContent = '開始辨識'; st.textContent = '按下「開始辨識」看結果'; return; }
+    busy = true; run.setAttribute('aria-disabled', 'true'); st.textContent = '辨識中…';
+    box.classList.remove('scan'); void box.offsetWidth; box.classList.add('scan');
+    setTimeout(function () { box.classList.add('read'); st.textContent = '讀出 3 個欄位，請確認。'; run.textContent = '再試一次'; run.removeAttribute('aria-disabled'); busy = false; }, reduced ? 0 : 1150);
+  });
+
+  // 方案：數字全部出自現行 T-Vouch 官網；年繳＝月費 × 10（「年繳只付 10 個月」）
+  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  var PLANS = {
+    free: { name: '免費', price: 0, qty: '50 張／月', items: ['AI 憑證辨識', '單張上傳', '30 日資料保留', '社群支援'], cta: '免費開始', href: 'https://app.t-vouch.com/register' },
+    starter: { name: '入門 Starter', price: 590, qty: '300 張／月', items: ['AI 憑證辨識', '批量上傳（10 張）', 'CSV 匯出', '30 日資料保留', 'Email 支援'], cta: '立即訂閱', href: 'https://app.t-vouch.com/register' },
+    pro: { name: '專業 Pro', tag: '最受歡迎', price: 1490, qty: '1,000 張／月', items: ['AI 憑證辨識', '批量上傳（50 張）', 'CSV 匯出', 'REST API 存取', '90 日資料保留', '優先 Email 支援'], cta: '立即訂閱', href: 'https://app.t-vouch.com/register' },
+    biz: { name: '商務 Business', price: 5490, qty: '5,000 張／月', items: ['所有專業版功能', '365 日資料保留', '99.5% SLA 保證', '專屬客服'], cta: '立即訂閱', href: 'https://app.t-vouch.com/register' }
+  };
+  var fmt = function (n) { return n.toLocaleString('en-US'); };
+  var plan = document.querySelector('.js-plan');
+  function render(k) {
+    var p = PLANS[k];
+    plan.innerHTML = '<p class="name">' + p.name + (p.tag ? '<em>' + p.tag + '</em>' : '') + '</p>' +
+      '<p class="price">NT$' + fmt(p.price) + '<small>/ 月</small></p>' +
+      '<p class="year"><b class="nw">' + p.qty + '</b>・' + (p.price ? '<span class="nw">年繳 NT$' + fmt(p.price * 10) + '，</span><span class="nw">省下 NT$' + fmt(p.price * 2) + '</span>' : '不用信用卡') + '</p>' +
+      '<ul>' + p.items.map(function (t) { return '<li>' + CHECK + t + '</li>'; }).join('') + '</ul>' +
+      '<a class="btn" href="' + p.href + '">' + p.cta + '</a>';
+    plan.classList.remove('swap'); void plan.offsetWidth; plan.classList.add('swap');
+  }
+  document.querySelectorAll('input[name="qty"]').forEach(function (r) { r.addEventListener('change', function () { render(r.value); }); });
+  render('pro');
+})();
+</script>
+</body>
+</html>

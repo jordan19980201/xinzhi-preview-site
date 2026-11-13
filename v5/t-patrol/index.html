@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="../favicon.png">
+<script>
+  // 配色：?theme= 優先；沒指定就看訪客的時間（06:00–17:59 白天紙白，其他傍晚夜金）。和官網同一套。
+  (function () {
+    var t = new URLSearchParams(location.search).get('theme');
+    if (!t) { var h = new Date().getHours(); t = h >= 6 && h < 18 ? 'paper' : 'night'; }
+    if (t === 'paper') document.documentElement.dataset.theme = t;
+  })();
+</script>
+<title>T-Patrol 平安福｜團體活動即時定位安全管理系統</title>
+<meta name="description" content="學生戴上識別證套或手環，老師在手機上隨時看得到、一鍵點名。2026 年七所學校、27 天活動、零事故。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../v5.css">
+<link rel="stylesheet" href="../story.css">
+<style>
+/* T-Patrol 產品網站（v5）。設計依據：_preview/design-system/t-patrol/pages/product-site.md
+   章節順序照 ui-ux-pro-max「Scroll-Triggered Storytelling」：開場（城市裡的學校）→ 問題 → 真實事件 → 裝置 → 戴法 → 系統 → 實績 → 試辦。 */
+
+/* 02 老師最怕的四件事：左邊一句話，右邊像老師心裡的清單 */
+.p-worry { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+.p-worry h2 { font-size: var(--t-display); line-height: 1.15; letter-spacing: -0.01em; }
+.worry { list-style: none; display: grid; }
+.worry li { padding: var(--s-4) 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 7.5em 1fr; gap: var(--s-4); align-items: baseline; }
+.worry li:first-child { border-top: 2px solid var(--ink); }
+.worry b { font-size: var(--t-lg); line-height: 1.35; }
+.worry span { color: var(--ink-2); }
+.in .worry li { animation: fade 600ms var(--ease) both; animation-delay: calc(150ms + var(--i) * 90ms); }
+
+/* 03 真實事件：四欄，最後一句是重點 */
+.p-news { display: grid; grid-template-rows: auto 1fr auto; gap: var(--s-6); }
+.p-news h2 { font-size: var(--t-display); line-height: 1.12; }
+.news { display: grid; grid-template-columns: repeat(4, 1fr); align-self: center; }
+.news article { padding: 0 var(--s-5); border-left: 1px solid var(--rule); display: flex; flex-direction: column; gap: var(--s-2); }
+.news article:first-child { padding-left: 0; border-left: 0; }
+.news time { font-weight: 700; font-size: var(--t-sm); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.news h3 { font-size: 1.15rem; line-height: 1.4; font-weight: 800; }
+.news p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; }
+.news strong { margin-top: auto; padding-top: var(--s-3); font-size: var(--t-lg); line-height: 1.4; font-weight: 800; }
+.news strong span { box-shadow: inset 0 -.42em 0 color-mix(in oklch, var(--hi) 55%, transparent); }
+.src { font-size: 12px; color: var(--ink-2); }
+
+/* 04 裝置分層：一張學生證，就是一台定位器 */
+.p-device { display: grid; grid-template-columns: .8fr 1.2fr; gap: var(--s-7); align-items: center; }
+.p-device h2 { font-size: var(--t-display); line-height: 1.12; }
+.p-device .lead { margin-top: var(--s-5); }
+.explode { position: relative; width: 100%; max-width: 640px; max-height: calc(100dvh - 210px); aspect-ratio: 600 / 520; justify-self: center; }
+.explode svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.layer { transform: translate(200px, calc(250px + var(--i) * 12px)); transition: transform 1100ms var(--ease); }
+.in .layer { transform: translate(200px, var(--y)); transition-delay: calc(200ms + var(--i) * 80ms); }
+.lead-line { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 3 4; opacity: 0; transition: opacity 400ms ease 1200ms; }
+.in .lead-line { opacity: 1; }
+.tags { position: absolute; inset: 0; list-style: none; }
+.tags li { position: absolute; left: 67%; transform: translateY(-50%); opacity: 0; transition: opacity 500ms ease, transform 500ms var(--ease); }
+.in .tags li { opacity: 1; transition-delay: calc(1100ms + var(--i) * 100ms); }
+.tags b { display: block; font-size: var(--t-lg); line-height: 1.3; }
+.tags span { display: block; font-size: var(--t-sm); color: var(--ink-2); max-width: 15em; line-height: 1.5; }
+.tags small { display: block; font-size: 12px; font-weight: 700; color: var(--ink-2); letter-spacing: .04em; }
+
+/* 05 兩種戴法：左右對開，中間一條線 */
+.p-wear { display: grid; grid-template-rows: auto 1fr; gap: var(--s-5); }
+.p-wear h2 { font-size: var(--t-2xl); line-height: 1.25; }
+.wear { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+.wear article { display: grid; grid-template-columns: auto 1fr; gap: var(--s-6); align-items: center; padding-right: var(--s-6); }
+.wear article + article { padding: 0 0 0 var(--s-6); border-left: 1px solid var(--rule); }
+.wear img { height: clamp(180px, 40vh, 340px); width: auto; filter: drop-shadow(0 24px 24px var(--shadow)); }
+.wear .k { font-weight: 700; color: var(--ink-2); font-size: var(--t-sm); }
+.wear h3 { font-size: var(--t-xl); line-height: 1.25; margin-top: var(--s-1); }
+.wear ul { list-style: none; margin-top: var(--s-4); display: grid; gap: 2px; font-weight: 700; }
+.wear ul li::before { content: ""; display: inline-block; width: 14px; height: 2px; background: var(--hi); margin-right: 10px; vertical-align: .32em; }
+.wear p { margin-top: var(--s-3); color: var(--ink-2); }
+
+/* 06 同一套系統：選角色，看他手上是什麼 */
+.p-system { display: grid; grid-template-columns: .9fr 1.1fr; gap: var(--s-7); align-items: center; }
+.p-system h2 { font-size: var(--t-2xl); line-height: 1.25; }
+.roles { display: flex; gap: var(--s-2); margin-top: var(--s-5); }
+.roles button { min-height: 44px; padding: 0 var(--s-4); border-radius: 999px; font-weight: 700; box-shadow: inset 0 0 0 1.5px var(--rule); transition: background-color 200ms ease, color 200ms ease; }
+.roles button[aria-selected="true"] { background: var(--ink); color: var(--bg); box-shadow: none; }
+.role-copy { margin-top: var(--s-6); min-height: 15em; }
+.role-copy h3 { font-size: var(--t-xl); line-height: 1.3; }
+.role-copy > p { margin-top: var(--s-2); color: var(--ink-2); }
+.role-copy dl { margin-top: var(--s-5); display: grid; gap: 0; }
+.role-copy dl div { display: grid; grid-template-columns: 8em 1fr; gap: var(--s-4); padding: var(--s-3) 0; border-top: 1px solid var(--rule); }
+.role-copy dt { font-weight: 800; }
+.role-copy dd { color: var(--ink-2); }
+.role-copy [hidden], .stage [hidden] { display: none; }
+.stage { justify-self: center; display: grid; place-items: center; min-height: min(560px, calc(100dvh - 220px)); }
+.stage > div { animation: fade 500ms var(--ease) both; }
+/* 老師手機 */
+.scr .bar { padding: 14px 14px 8px; font-weight: 800; display: flex; justify-content: space-between; align-items: baseline; }
+.scr .bar span { color: var(--ok); font-variant-numeric: tabular-nums; }
+.scr .map { flex: 1; position: relative; background: oklch(0.95 0.015 140); overflow: hidden; }
+.scr .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scr .dot { animation: wander 6s ease-in-out infinite alternate; transform-box: fill-box; }
+.scr .dot:nth-child(3n) { animation-duration: 7.5s; } .scr .dot:nth-child(4n) { animation-delay: -3s; }
+@keyframes wander { to { transform: translate(5px, -4px); } }
+.scr .foot { padding: 10px 14px 14px; display: grid; gap: 8px; }
+.scr .foot b { display: flex; justify-content: center; align-items: center; min-height: 38px; border-radius: 10px; background: oklch(0.2 0.012 80); color: #fff; font-size: 13px; }
+.scr .foot small { color: oklch(0.45 0.01 80); text-align: center; }
+/* 家長網頁 */
+.scr .url { margin: 12px 12px 0; padding: 6px 10px; border-radius: 8px; background: oklch(0.94 0.004 85); font-size: 11px; color: oklch(0.42 0.01 80); }
+.scr .kid { padding: 18px 14px 10px; }
+.scr .kid b { display: block; font-size: 20px; }
+.scr .kid span { color: oklch(0.42 0.01 80); }
+.scr .badge { margin: 0 14px; display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: oklch(0.94 0.05 150); color: oklch(0.4 0.12 150); font-weight: 800; }
+.scr .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.scr .mini-map { margin: 12px; flex: 1; border-radius: 12px; background: oklch(0.95 0.015 140); position: relative; overflow: hidden; }
+.scr .mini-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* 學校後台：瀏覽器 */
+.browser { width: min(640px, 46vw); aspect-ratio: 16 / 10.5; background: var(--paper); color: var(--ink); border-radius: 12px; overflow: hidden; box-shadow: 0 30px 50px -26px var(--shadow); display: grid; grid-template-rows: 30px 1fr; font-size: 12px; }
+.browser .chrome { background: oklch(0.93 0.004 85); display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+.browser .chrome i { width: 9px; height: 9px; border-radius: 50%; background: oklch(0.82 0.005 85); }
+.browser .chrome span { margin-left: 12px; font-size: 11px; color: oklch(0.45 0.01 80); }
+.browser .app { display: grid; grid-template-columns: 170px 1fr; min-height: 0; }
+.browser ul { list-style: none; padding: 12px; display: grid; align-content: start; gap: 2px; border-right: 1px solid oklch(0.92 0.004 85); }
+.browser li { padding: 7px 8px; border-radius: 6px; font-weight: 600; }
+.browser li[aria-current] { background: oklch(0.2 0.012 80); color: #fff; }
+.browser .map { position: relative; background: oklch(0.95 0.015 140); }
+.browser .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.browser .alert { position: absolute; right: 12px; top: 12px; padding: 8px 12px; border-radius: 8px; background: #fff3f3; color: oklch(0.45 0.17 28); border: 1px solid #f5c2c4; font-weight: 700; animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .55; } }
+
+/* 07 實績：左邊一句致謝，右邊七所學校 */
+.p-proof { display: grid; grid-template-columns: 1fr 1.15fr; gap: var(--s-8); align-items: center; }
+.p-proof blockquote { font-size: var(--t-2xl); line-height: 1.35; font-weight: 900; }
+.p-proof blockquote footer { margin-top: var(--s-3); font-size: var(--t-sm); font-weight: 700; color: var(--ink-2); }
+.p-proof .stats { margin-top: var(--s-7); display: flex; gap: var(--s-7); }
+.p-proof .stats b { display: block; font-size: clamp(3rem, min(6vw, 10vh), 5.5rem); line-height: .95; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.p-proof .stats b small { font-size: .4em; letter-spacing: 0; margin-left: 4px; }
+.p-proof .stats span { font-size: var(--t-sm); color: var(--ink-2); }
+.cases { list-style: none; display: grid; }
+.cases li { display: grid; grid-template-columns: 5.2em 1fr auto; gap: var(--s-4); padding: 10px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+.cases li:first-child { border-top: 2px solid var(--ink); }
+.cases time { font-weight: 700; color: var(--ink-2); font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+.cases b { font-size: 1.05rem; }
+.cases b span { display: block; font-weight: 500; font-size: var(--t-sm); color: var(--ink-2); }
+.cases em { font-style: normal; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.in .cases li { animation: fade 500ms var(--ease) both; animation-delay: calc(100ms + var(--i) * 70ms); }
+
+/* 08 試辦：三段時間，像一張行程表 */
+.p-start { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-8); align-items: center; }
+.p-start h2 { font-size: var(--t-display); line-height: 1.12; }
+.p-start .lead { margin-top: var(--s-4); }
+.p-start .acts { margin-top: var(--s-6); display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); align-items: center; }
+.plan { list-style: none; display: grid; gap: 0; }
+.plan li { display: grid; grid-template-columns: 9em 1fr; gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.plan li:first-child { border-top: 2px solid var(--ink); }
+.plan b { font-weight: 800; }
+.plan span { color: var(--ink-2); }
+.p-start .direct { margin-top: var(--s-6); }
+
+@media (min-width: 961px) and (max-height: 760px) {
+  .worry li { padding: var(--s-3) 0; }
+  .news p { display: none; }
+}
+@media (max-width: 960px) {
+  .p-worry, .p-device, .p-system, .p-proof, .p-start { grid-template-columns: 1fr; gap: var(--s-6); align-content: start; }
+  .news { grid-template-columns: 1fr 1fr; gap: var(--s-6) 0; }
+  .news article:nth-child(3) { padding-left: 0; border-left: 0; }
+  .wear { grid-template-columns: 1fr; gap: var(--s-6); }
+  .wear article + article { padding: var(--s-6) 0 0; border-left: 0; border-top: 1px solid var(--rule); }
+  .wear img { height: 160px; }
+  .explode { max-height: none; }
+  .browser { width: 100%; }
+  .browser .app { grid-template-columns: 120px 1fr; }
+  .stage { min-height: 0; }
+}
+@media (max-width: 640px) {
+  .worry li { grid-template-columns: 1fr; gap: 2px; }
+  .news { grid-template-columns: 1fr; }
+  .news article { padding: 0 0 var(--s-5); border-left: 0; border-bottom: 1px solid var(--rule); }
+  .wear article { grid-template-columns: 1fr; gap: var(--s-3); padding: 0; }
+  .tags li { left: 60%; }
+  .tags span { display: none; }
+  .tags b { font-size: 1rem; }
+  .cases li { grid-template-columns: 4.4em 1fr; }
+  .cases em { grid-column: 2; }
+  .plan li, .role-copy dl div { grid-template-columns: 1fr; gap: 2px; }
+  .p-proof .stats { gap: var(--s-5); }
+  .roles { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#hello">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><i></i></div>
+
+<header class="top">
+  <a class="crumb" href="../company/" aria-label="回到信誌科技城市（官網）"><img class="lg-dark" src="../../company/assets/ti-lockup-gold.svg" alt="" width="126" height="26"><img class="lg-light" src="../../company/assets/ti-lockup-black.svg" alt="" width="126" height="26"><i class="sep" aria-hidden="true"></i><span class="mark t-patrol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"><path d="M12 3.2l7 2.8v5.2c0 4.4-2.9 8.1-7 9.6-4.1-1.5-7-5.2-7-9.6V6l7-2.8z"/></svg></span>T-Patrol</a>
+  <nav aria-label="T-Patrol 章節">
+    <button type="button" data-to="worry">為什麼</button>
+    <button type="button" data-to="device">裝置</button>
+    <button type="button" data-to="system">系統</button>
+    <button type="button" data-to="proof">實績</button>
+    <button type="button" data-to="start">試辦</button>
+    <a class="login" href="https://app.t-patrol.com/login">登入</a>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- 01 開場：城市裡的學校 -->
+  <section class="page p-hello" id="hello" aria-labelledby="h-hello" data-name="開始">
+    <div class="copy">
+      <p class="brand"><span class="mark t-patrol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.2l7 2.8v5.2c0 4.4-2.9 8.1-7 9.6-4.1-1.5-7-5.2-7-9.6V6l7-2.8z"/></svg></span><span>T-Patrol 平安福<small>團體活動即時定位安全管理系統</small></span></p>
+      <h1 id="h-hello"><span class="ln"><span class="nw">每個學生在哪，</span></span><span class="ln"><span class="nw">老師都知道。</span></span></h1>
+      <p class="intro">學生戴上識別證套或手環，老師在手機上隨時看得到、一鍵點名。</p>
+      <div class="acts">
+        <button class="btn" type="button" data-story="patrol"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>看校外教學的一天</button>
+        <button class="go" type="button" data-video="../../t-patrol/assets/video/tpatrol.mp4" data-poster="../../t-patrol/assets/video/tpatrol.jpg">看 16 秒介紹影片</button>
+      </div>
+    </div>
+    <canvas class="city" aria-hidden="true"></canvas>
+    <button class="pin" type="button" data-story="patrol"><span class="tile t-patrol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.2l7 2.8v5.2c0 4.4-2.9 8.1-7 9.6-4.1-1.5-7-5.2-7-9.6V6l7-2.8z"/></svg></span><span class="txt"><b>七年一班・校外教學中</b><span>點我看這一天</span></span></button>
+    <p class="toast" role="status" aria-live="polite"><b>王小明</b> 離開了安全範圍・老師手機已通知</p>
+    <section class="story" hidden aria-labelledby="story-title"></section>
+  </section>
+
+  <!-- 02 問題 -->
+  <section class="page p-worry" id="worry" aria-labelledby="h-worry" data-name="老師最怕的事">
+    <h2 id="h-worry"><span class="nw">點名靠人，</span><br><span class="nw">脫隊往往是</span><span class="nw">事後才發現。</span></h2>
+    <ol class="worry" aria-label="老師最怕的四件事">
+      <li style="--i:0"><b>學生不見了</b><span>傳統點名只能事後發現脫隊，老師得分頭尋找。</span></li>
+      <li style="--i:1"><b>通知被忽略</b><span>學生雖帶手機，玩得投入就容易忽略集合通知，不知不覺脫隊。</span></li>
+      <li style="--i:2"><b>走散難掌握</b><span>走散後老師難以掌握位置，找人莫名耗時，行程跟著延誤。</span></li>
+      <li style="--i:3"><b>家長很焦慮</b><span>家長被動等待，意外時學校承擔信任風險。</span></li>
+    </ol>
+    <p class="mini">這是老師最怕的四件事。<a href="#start" data-to="start">直接預約試辦</a></p>
+  </section>
+
+  <!-- 03 真實事件 -->
+  <section class="page p-news" id="news" aria-labelledby="h-news" data-name="真實事件">
+    <h2 id="h-news">找不到人，<mark class="hl">就來不及。</mark></h2>
+    <div class="news">
+      <article><time>2026 年 1 月・日本阿蘇火山</time><h3>觀光直升機墜毀，機上 2 名台灣旅客</h3><p>約 300 人搜救，受地形與火山氣體阻隔，近一個月後才以無人機確認機體位置。</p><strong><span>沒有位置，再多人力也進不去。</span></strong></article>
+      <article><time>2026 年 3 月・美國南卡羅來納州</time><h3>6 歲學童校外教學被留在劇院</h3><p>醒來全場已空，獨自走上公路被警察發現。校方在警方通知前不知情。</p><strong><span>點名靠人，就會有漏掉的一次。</span></strong></article>
+      <article><time>2022 年 3 月・苗栗大湖露營區</time><h3>2 歲幼童走失，闖入竹林陡坡</h3><p>露友與警消約 200 人搜山，近 3 小時後才尋獲。</p><strong><span>走失後每一分鐘都在擴大搜尋範圍。</span></strong></article>
+      <article><time>2026 年 5 月・日本京都</time><h3>20 歲美籍學生與家人走散後失聯</h3><p>手機位置分享關閉後失去蹤跡，警犬與直升機搜索，FBI 協助，仍未尋獲。</p><strong><span>手機可以關，定位裝置不會。</span></strong></article>
+    </div>
+    <p class="src">資料來源：聯合新聞網、經濟日報、FITSNews、自由時報、ETtoday、CNN</p>
+  </section>
+
+  <!-- 04 裝置分層 -->
+  <section class="page p-device" id="device" aria-labelledby="h-device" data-name="裝置">
+    <div>
+      <h2 id="h-device"><span class="nw">一張學生證，</span><br><span class="nw">就是一台定位器。</span></h2>
+      <p class="lead">直接把學生證放進去，掛在胸前就好，不用多帶一樣東西。</p>
+    </div>
+    <div class="explode">
+      <svg viewBox="0 0 600 520" aria-hidden="true">
+        <g stroke-linejoin="round">
+          <!-- 由下往上畫：本體 → 定位核心 → 學生證 → 透明面板 -->
+          <g class="layer" style="--i:3; --y:410px"><g transform="matrix(.866 .5 -.866 .5 0 0)"><rect x="-110" y="-70" width="220" height="140" rx="16" fill="#2b2d33" transform="translate(9 9)"/><rect x="-110" y="-70" width="220" height="140" rx="16" fill="#3a3d45"/><rect x="96" y="-14" width="10" height="28" rx="3" fill="#D4A94E"/><circle cx="-92" cy="0" r="7" fill="#22242a"/></g></g>
+          <g class="layer" style="--i:2; --y:310px"><g transform="matrix(.866 .5 -.866 .5 0 0)"><rect x="-80" y="-48" width="160" height="96" rx="8" fill="#1f5f45"/><rect x="-26" y="-26" width="52" height="52" rx="6" fill="#D4A94E"/><rect x="-14" y="-14" width="28" height="28" rx="3" fill="#2b2d33"/><path d="M-70 -36h30M-70 -26h20M40 30h30M50 20h20" stroke="#8fd1b0" stroke-width="3"/></g></g>
+          <g class="layer" style="--i:1; --y:210px"><g transform="matrix(.866 .5 -.866 .5 0 0)"><rect x="-100" y="-62" width="200" height="124" rx="10" fill="#fbfaf6"/><rect x="-86" y="-46" width="58" height="72" rx="6" fill="#bfd9e8"/><circle cx="-57" cy="-22" r="13" fill="#7fa6bf"/><path d="M-12 -36h80M-12 -18h60M-12 0h70" stroke="#c9c6bd" stroke-width="7" stroke-linecap="round"/></g></g>
+          <g class="layer" style="--i:0; --y:110px"><g transform="matrix(.866 .5 -.866 .5 0 0)"><rect x="-110" y="-70" width="220" height="140" rx="16" fill="oklch(0.9 0.03 230 / .28)" stroke="oklch(0.85 0.04 230 / .9)" stroke-width="2.5"/><path d="M-90 -50l40 0" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/></g></g>
+        </g>
+        <path class="lead-line" d="M356 130H396M356 230H396M356 330H396M356 430H396"/>
+      </svg>
+      <ul class="tags">
+        <li style="--i:0; top: 25%"><b>透明面板</b><span>保護學生證，正面清楚可見。</span></li>
+        <li style="--i:1; top: 44.2%"><b>學生證</b><span>直接放入，不用多帶一樣東西。</span></li>
+        <li style="--i:2; top: 63.5%"><b>定位核心</b><span>內建 GPS，離開範圍自動警報。</span></li>
+        <li style="--i:3; top: 82.7%"><b>識別證套本體</b><span>外型低調，側邊附充電接點。</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 05 兩種戴法 -->
+  <section class="page p-wear" id="wear" aria-labelledby="h-wear" data-name="兩種戴法">
+    <h2 id="h-wear">兩種戴法，看活動選。</h2>
+    <div class="wear">
+      <article><img src="../../t-patrol/assets/device-card.webp" alt="識別證套式定位裝置，放著學生證" width="300" height="400"><div><p class="k">掛在胸前</p><h3>識別證套式裝置</h3><ul><li>與學生證合一</li><li>不易遺失</li><li>外型低調</li></ul><p>適合校外教學、畢業旅行。</p></div></article>
+      <article><img src="../../t-patrol/assets/device-band.webp" alt="手環式 GPS 追蹤裝置" width="300" height="400"><div><p class="k">戴在手上</p><h3>手環式 GPS 追蹤裝置</h3><ul><li>SOS 按鈕</li><li>續航 3 天</li><li>輕巧防水</li></ul><p>適合戶外活動、隔宿露營。</p></div></article>
+    </div>
+    <p class="mini">不用採購硬體，依活動次數租用。<a href="#start" data-to="start">看怎麼試辦</a></p>
+  </section>
+
+  <!-- 06 系統 -->
+  <section class="page p-system" id="system" aria-labelledby="h-system" data-name="系統">
+    <div>
+      <h2 id="h-system"><span class="nw">從學生到家長，</span><br><span class="nw">同一套系統。</span></h2>
+      <div class="roles" role="tablist" aria-label="選一個角色">
+        <button type="button" role="tab" id="tab-t" aria-controls="role-t" aria-selected="true">老師 App</button>
+        <button type="button" role="tab" id="tab-p" aria-controls="role-p" aria-selected="false" tabindex="-1">家長</button>
+        <button type="button" role="tab" id="tab-s" aria-controls="role-s" aria-selected="false" tabindex="-1">學校後台</button>
+      </div>
+      <div class="role-copy">
+        <div id="role-t" role="tabpanel" aria-labelledby="tab-t"><h3>全班動態，在老師手機裡。</h3><p>地圖追蹤、一鍵點名、活動管理。</p><dl><div><dt>即時地圖追蹤</dt><dd>全班位置一目了然</dd></div><div><dt>一鍵點名</dt><dd>誰已到、誰沒到，秒看清楚</dd></div><div><dt>班級活動管理</dt><dd>多隊伍同時追蹤</dd></div></dl></div>
+        <div id="role-p" role="tabpanel" aria-labelledby="tab-p" hidden><h3>掃一下，家長就看得到。</h3><p>不用裝 App，任何手機掃 QR Code 就能看。</p><dl><div><dt>開啟方式</dt><dd>掃描 QR Code，網頁直接開</dd></div><div><dt>需要安裝</dt><dd>不用，任何手機都可以</dd></div><div><dt>看得到什麼</dt><dd>孩子即時位置、是否在範圍內</dd></div></dl></div>
+        <div id="role-s" role="tabpanel" aria-labelledby="tab-s" hidden><h3>離開範圍，立刻知道。</h3><p>在學校後台設定電子圍籬，學生一離開範圍就自動通知。</p><dl><div><dt>電子圍籬</dt><dd>離開範圍立即通知</dd></div><div><dt>智慧警報</dt><dd>依嚴重程度分級推播</dd></div><div><dt>歷史軌跡</dt><dd>保留 6 個月，事後有據</dd></div></dl></div>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div data-for="role-t"><div class="phone"><div class="scr"><p class="bar">七年一班<span>14 / 14</span></p><div class="map"><svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><path d="M0 120H200M0 210H200M70 0V300M150 0V300" stroke="#fff" stroke-width="12"/><ellipse cx="108" cy="160" rx="70" ry="88" fill="oklch(0.6 0.12 150 / .12)" stroke="oklch(0.5 0.13 150)" stroke-width="2.5" stroke-dasharray="7 6"/><g fill="oklch(0.52 0.13 150)" stroke="#fff" stroke-width="2"><circle class="dot" cx="88" cy="120" r="6"/><circle class="dot" cx="118" cy="138" r="6"/><circle class="dot" cx="96" cy="170" r="6"/><circle class="dot" cx="130" cy="186" r="6"/><circle class="dot" cx="104" cy="208" r="6"/><circle class="dot" cx="140" cy="150" r="6"/><circle class="dot" cx="78" cy="190" r="6"/><circle class="dot" cx="120" cy="230" r="6"/></g></svg></div><div class="foot"><b>一鍵點名</b><small>示意畫面</small></div></div></div></div>
+      <div data-for="role-p" hidden><div class="phone"><div class="scr"><p class="url">t-patrol.com/parent/…</p><div class="kid"><b>王小明</b><span>七年一班 校外教學・最後更新 10:42</span></div><span class="badge">在範圍內</span><div class="mini-map"><svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><path d="M0 80H200M120 0V200" stroke="#fff" stroke-width="12"/><ellipse cx="100" cy="100" rx="70" ry="62" fill="oklch(0.6 0.12 150 / .12)" stroke="oklch(0.5 0.13 150)" stroke-width="2.5" stroke-dasharray="7 6"/><circle class="dot" cx="92" cy="108" r="8" fill="oklch(0.52 0.13 150)" stroke="#fff" stroke-width="3"/></svg></div></div></div></div>
+      <div data-for="role-s" hidden><div class="browser"><div class="chrome"><i></i><i></i><i></i><span>T-Patrol 學校後台</span></div><div class="app"><ul><li aria-current="true">即時地圖</li><li>電子圍籬</li><li>一鍵點名</li><li>智慧警報</li><li>歷史軌跡</li><li>家長查看</li></ul><div class="map"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice"><path d="M0 90H400M0 190H400M140 0V260M300 0V260" stroke="#fff" stroke-width="14"/><ellipse cx="210" cy="140" rx="120" ry="80" fill="oklch(0.6 0.12 150 / .1)" stroke="oklch(0.5 0.13 150)" stroke-width="2.5" stroke-dasharray="8 7"/><g fill="oklch(0.52 0.13 150)" stroke="#fff" stroke-width="2"><circle class="dot" cx="180" cy="120" r="6"/><circle class="dot" cx="220" cy="150" r="6"/><circle class="dot" cx="250" cy="120" r="6"/><circle class="dot" cx="200" cy="170" r="6"/><circle class="dot" cx="160" cy="150" r="6"/></g><circle cx="356" cy="214" r="7" fill="oklch(0.55 0.2 28)" stroke="#fff" stroke-width="2.5"/></svg><p class="alert">王小明 已離開設定範圍</p></div></div></div></div>
+    </div>
+  </section>
+
+  <!-- 07 實績 -->
+  <section class="page p-proof" id="proof" aria-labelledby="h-proof" data-name="實績">
+    <div>
+      <h2 id="h-proof" class="kick">2026 執行實績</h2>
+      <blockquote><p>「山區海線 14 天，<br>軌跡一天都沒斷。」</p><footer>光華國中 山海騎航・單車環島加帆船・40 台 × 14 天</footer></blockquote>
+      <div class="stats"><div><b>7<small>校</small></b><span>實際使用<br>國小到國中</span></div><div><b>27<small>天</small></b><span>累計活動天數<br>不含常態使用</span></div><div><b>0<small>件</small></b><span>事故<br>全數如期完成</span></div></div>
+    </div>
+    <ol class="cases">
+      <li style="--i:0"><time>4 月</time><b>龍潭國中<span>兩天一夜營隊・過夜活動全程守護</span></b><em>全隊</em></li>
+      <li style="--i:1"><time>6 月</time><b>虎林國小<span>畢業路跑・校長粉專公開推薦</span></b><em>67 人</em></li>
+      <li style="--i:2"><time>6 月</time><b>東門國小<span>畢業路跑・體育團隊集體追蹤</span></b><em>38 人</em></li>
+      <li style="--i:3"><time>7 月</time><b>香山國小<span>航空營（桃園機場）・官方粉專公開感謝</span></b><em>25 人</em></li>
+      <li style="--i:4"><time>7 至 8 月</time><b>光華國中<span>山海騎航・單車環島加帆船</span></b><em>40 台 × 14 天</em></li>
+      <li style="--i:5"><time>8 月</time><b>西門國小<span>棒球隊日本千葉交流・首個海外案</span></b><em>15 台 × 8 天</em></li>
+      <li style="--i:6"><time>9 月起</time><b>育賢國中<span>特教應用・校內日常安全延伸</span></b><em>常態使用</em></li>
+    </ol>
+  </section>
+
+  <!-- 08 試辦 -->
+  <section class="page p-start" id="start" aria-labelledby="h-start" data-name="免費試辦">
+    <div>
+      <h2 id="h-start"><span class="nw">首次合作，</span><br><span class="nw">免費試辦。</span></h2>
+      <p class="lead">不用採購硬體、不用編列設備預算，依活動次數租用。歡迎聊聊貴校的活動需求。</p>
+      <div class="acts"><a class="btn" href="../company/?subject=T-Patrol#talk">預約免費試辦</a><a class="go" href="https://app.t-patrol.com/login">登入平台</a></div>
+    </div>
+    <div>
+      <ol class="plan" aria-label="試辦流程">
+        <li><b>活動前 1 至 2 週</b><span>配送裝置與管理平台帳號</span></li>
+        <li><b>活動當天</b><span>活動期間全程技術支援</span></li>
+        <li><b>活動結束</b><span>歸還裝置，軌跡保留 6 個月</span></li>
+      </ol>
+      <div class="direct"><a href="mailto:contact@t-patrol.com">contact@t-patrol.com</a><a href="tel:+88635619943">(03) 561-9943</a><p>新竹市光復路二段101號 清華大學創新育成大樓720室</p></div>
+    </div>
+    <p class="legal"><span>© 2026 信誌科技股份有限公司</span><a href="https://t-patrol.com/privacy.html">隱私權政策</a><a href="https://t-patrol.com/terms.html">服務條款</a><a href="https://t-patrol.com/delete-account.html">刪除帳號</a><a href="../t-vouch/">也看看 T-Vouch</a></p>
+  </section>
+</main>
+
+<div class="pager">
+  <button class="prev" type="button" aria-label="上一頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <button class="next" type="button"><span class="js-next-label">下一頁</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<script src="../company/city.js"></script>
+<script src="../stories.js"></script>
+<script src="../v5.js"></script>
+<script>
+  V5.init({
+    spot: 'patrol',
+    home: function (P) { return { x: P.school.x, y: P.school.y, z: .6, zoom: 1.9 }; },
+    // 每一頁城市鏡頭：問題頁學生真的走出範圍；真實事件與實績拉遠看整座城
+    cams: function (P) { return {
+      worry: { x: P.gate.x - .6, y: P.gate.y - .6, z: .2, zoom: 2.4, stray: 'out', ax: .5, ay: .8 },
+      news: { x: 7, y: 7, z: 0, zoom: 1.1 },
+      device: { x: P.school.x, y: P.school.y, z: .4, zoom: 2.2 },
+      wear: { x: P.field.x, y: P.field.y, z: .2, zoom: 3 },
+      system: { x: P.school.x, y: P.school.y, z: .3, zoom: 1.7 },
+      proof: { x: 8, y: 8, z: 0, zoom: 1 },
+      start: { x: P.school.x, y: P.school.y, z: .5, zoom: 2 }
+    }; },
+    stories: function (P) { var s = window.V5Stories(P, 't-patrol'); return { patrol: s.patrol }; },
+    onTab: function (t) { document.querySelectorAll('.stage [data-for]').forEach(function (d) { d.hidden = d.dataset.for !== t.getAttribute('aria-controls'); }); }
+  });
+</script>
+</body>
+</html>

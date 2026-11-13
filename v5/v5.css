@@ -1,0 +1,197 @@
+/* 信誌科技 v5 共用樣式（T-Patrol、T-Vouch 產品網站）。
+   和官網 v5/company 同一套：夜金／紙白依訪客時間切換、左右翻頁、動態城市開場、飛進角落看故事。
+   白色「島」（手機螢幕、發票、表單、故事面板）永遠白底深字。 */
+:root {
+  --gold: #D4A94E;
+  --paper: oklch(0.99 0.004 85);
+  --ok: oklch(0.52 0.13 150);
+  --alert: oklch(0.55 0.2 28);
+  --scan: oklch(0.55 0.17 258);
+  --bg: oklch(0.205 0.004 80); --ink: oklch(0.95 0.008 85); --ink-2: oklch(0.80 0.012 85); --rule: oklch(0.95 0.008 85 / 0.18); --on-ink: oklch(0.205 0.004 80); --btn: #D4A94E; --btn-ink: oklch(0.2 0.02 80); --hi: #D4A94E; --hi-ink: oklch(0.2 0.02 80); --shadow: oklch(0 0 0 / 0.6); --card: oklch(0.25 0.006 80);
+  --sans: "Bricolage Grotesque", "Noto Sans TC", system-ui, sans-serif;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+  --t-sm: 0.875rem; --t-base: 1.0625rem; --t-lg: 1.375rem; --t-xl: 1.875rem;
+  --t-2xl: clamp(1.9rem, min(3.4vw, 5.4vh), 2.75rem); --t-display: clamp(2.4rem, min(5.4vw, 9.5vh), 5rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --z-nav: 20; --z-pager: 30; --z-modal: 50;
+  --pad-x: clamp(20px, 5vw, 80px);
+}
+html[data-theme="paper"], html[data-theme="paper"] body { --bg: oklch(0.985 0.002 85); --ink: oklch(0.2 0.01 80); --ink-2: oklch(0.42 0.012 80); --rule: oklch(0.2 0.01 80 / 0.14); --on-ink: oklch(0.985 0.002 85); --btn: oklch(0.2 0.01 80); --btn-ink: oklch(0.985 0.002 85); --hi: #D4A94E; --hi-ink: oklch(0.2 0.01 80); --shadow: oklch(0.2 0.01 80 / 0.25); --card: oklch(0.955 0.008 85); }
+.isle, .inv, .phone .scr, .browser { --ink: oklch(0.2 0.012 80); --ink-2: oklch(0.42 0.012 80); --on-ink: oklch(0.985 0.002 85); --btn: oklch(0.2 0.012 80); --btn-ink: oklch(0.985 0.002 85); --rule: oklch(0.2 0.012 80 / 0.12); }
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--sans); font-size: var(--t-base); line-height: 1.7; color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; overflow: hidden; font-optical-sizing: auto; }
+a { color: inherit; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+img, svg { display: block; max-width: 100%; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; font-weight: 900; }
+p { text-wrap: pretty; }
+.nw { white-space: nowrap; }
+.skip { position: absolute; left: var(--s-4); top: -80px; z-index: var(--z-modal); background: var(--ink); color: var(--on-ink); padding: var(--s-3) var(--s-4); border-radius: 6px; text-decoration: none; font-weight: 700; }
+.skip:focus { top: var(--s-4); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* 頂列：左邊是「信誌城市 › 產品」，右邊是這個產品的章節 */
+.top { position: fixed; inset: 0 0 auto; z-index: var(--z-nav); height: 76px; display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding: 0 var(--pad-x); pointer-events: none; }
+.top > * { pointer-events: auto; }
+.crumb { display: flex; align-items: center; gap: var(--s-3); text-decoration: none; font-weight: 800; font-size: 16px; }
+.crumb img { height: 26px; width: auto; }
+.crumb .lg-light { display: none; }
+html[data-theme="paper"] .crumb .lg-dark { display: none; }
+html[data-theme="paper"] .crumb .lg-light { display: block; }
+.crumb .sep { width: 1px; height: 22px; background: var(--rule); }
+.crumb .mark { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+.crumb .mark svg { width: 16px; height: 16px; }
+.top nav { display: flex; gap: var(--s-1); }
+.top nav button, .top nav a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 var(--s-3); font-weight: 700; font-size: 15px; border-radius: 6px; color: var(--ink-2); transition: color 150ms ease; position: relative; text-decoration: none; }
+.top nav button:hover, .top nav button[aria-current="true"], .top nav a:hover { color: var(--ink); }
+.top nav button::after { content: ""; position: absolute; left: var(--s-3); right: var(--s-3); bottom: 8px; height: 2px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 300ms var(--ease); }
+.top nav button[aria-current="true"]::after { transform: none; }
+.top nav .login { box-shadow: inset 0 0 0 1.5px var(--rule); border-radius: 999px; margin-left: var(--s-2); }
+
+/* 進度條（ui-ux-pro-max：Horizontal Scroll Journey 要有進度指示） */
+.progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: var(--z-pager); background: var(--rule); }
+.progress i { display: block; height: 100%; background: var(--hi); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 500ms var(--ease); }
+body.in-story .progress { opacity: 0; }
+
+/* 左右翻頁 */
+main { height: 100dvh; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+main::-webkit-scrollbar { display: none; }
+.page { background: transparent; color: var(--ink); flex: 0 0 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; position: relative; overflow: hidden; padding: 104px var(--pad-x) 96px; }
+.pager { position: fixed; right: var(--pad-x); bottom: var(--s-5); z-index: var(--z-pager); display: flex; gap: var(--s-2); }
+.pager button { min-height: 48px; padding: 0 var(--s-5); border-radius: 999px; font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; gap: var(--s-2); transition: transform 150ms ease, opacity 200ms ease; }
+.pager .prev { width: 48px; padding: 0; justify-content: center; box-shadow: inset 0 0 0 2px var(--ink); }
+.pager .next { background: var(--btn); color: var(--btn-ink); }
+.pager button:active { transform: scale(0.97); }
+.pager button[disabled] { opacity: 0; pointer-events: none; }
+.pager svg { width: 18px; height: 18px; }
+
+.btn { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 52px; padding: 0 var(--s-5); border-radius: 999px; background: var(--btn); color: var(--btn-ink); font-weight: 700; text-decoration: none; transition: transform 150ms ease, opacity 150ms ease; white-space: nowrap; }
+.btn:hover { opacity: .9; }
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 18px; height: 18px; }
+.go { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.go:hover { text-decoration-thickness: 3px; }
+.kick { font-weight: 700; color: var(--ink-2); font-size: var(--t-sm); letter-spacing: .02em; }
+.h-display { font-size: var(--t-display); line-height: 1.12; letter-spacing: -0.01em; }
+.h-2 { font-size: var(--t-2xl); line-height: 1.25; }
+.lead { color: var(--ink-2); font-size: var(--t-lg); line-height: 1.6; max-width: 26em; }
+mark.hl { background: var(--hi); color: var(--hi-ink); padding: 0 .18em; border-radius: 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ---------- 開場：鏡頭停在城市裡這個產品的角落 ---------- */
+.p-hello { padding: 0; }
+/* 城市畫布固定在所有頁面後面；內容頁蓋一層半透明底色，文字清楚、城市仍看得到在動 */
+main { position: relative; z-index: 1; }
+.page:not(.p-hello) { background: color-mix(in oklch, var(--bg) 70%, transparent); }
+/* 頂列疊在城市上：上緣一層同色漸層，選單才讀得清楚 */
+.p-hello::before { content: ""; position: absolute; inset: 0 0 auto; height: 130px; z-index: 1; pointer-events: none; background: linear-gradient(180deg, var(--bg), color-mix(in oklch, var(--bg) 0%, transparent)); }
+html:not([data-theme="paper"]) .p-hello::before { background: linear-gradient(180deg, oklch(0.16 0.01 260), oklch(0.16 0.01 260 / 0)); }
+.city { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+html:not([data-theme="paper"]) body { background: oklch(0.16 0.01 260); }
+.p-hello .copy { position: relative; z-index: 1; padding: 120px var(--pad-x) 96px; width: min(680px, 46%); height: 100%; display: flex; flex-direction: column; justify-content: center;
+  background: linear-gradient(90deg, var(--bg) 0%, var(--bg) 55%, color-mix(in oklch, var(--bg) 0%, transparent) 100%); }
+html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(90deg, oklch(0.16 0.01 260) 0%, oklch(0.16 0.01 260 / .92) 55%, oklch(0.16 0.01 260 / 0) 100%); }
+.p-hello .brand { display: flex; align-items: center; gap: var(--s-3); font-weight: 800; font-size: var(--t-lg); }
+.p-hello .brand .mark { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; }
+.p-hello .brand .mark svg { width: 24px; height: 24px; }
+.p-hello .brand small { display: block; font-size: var(--t-sm); font-weight: 700; color: var(--ink-2); line-height: 1.3; }
+.p-hello h1 { margin-top: var(--s-5); font-size: clamp(2.4rem, min(4.4vw, 9vh), 4.8rem); line-height: 1.12; letter-spacing: -0.01em; }
+.p-hello h1 .ln { display: block; overflow: hidden; padding-bottom: .06em; }
+.p-hello h1 .ln > span { display: inline-block; animation: rise 800ms var(--ease) both; }
+.p-hello h1 .ln:nth-child(2) > span { animation-delay: 120ms; }
+.p-hello .intro { margin-top: var(--s-5); max-width: 22em; font-size: var(--t-lg); line-height: 1.65; color: var(--ink-2); }
+.p-hello .acts { margin-top: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); }
+.p-hello .fine { margin-top: var(--s-4); font-size: var(--t-sm); color: var(--ink-2); }
+.p-hello .intro, .p-hello .acts, .p-hello .fine { animation: fade 700ms var(--ease) 360ms both; }
+.pin { position: absolute; z-index: 2; left: 0; top: 0; display: flex; text-align: left; font: inherit; align-items: center; gap: var(--s-3); padding: 8px 14px 8px 8px; border-radius: 999px; text-decoration: none;
+  background: oklch(1 0 0 / .94); color: oklch(0.2 0.012 80); box-shadow: 0 12px 26px -12px oklch(0 0 0 / .45); transform: translate(-50%, -100%); transition: transform 250ms var(--ease), box-shadow 250ms var(--ease); animation: drop 700ms var(--ease) 1600ms both; }
+.pin::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: inherit; transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
+.pin:hover, .pin:focus-visible { transform: translate(-50%, calc(-100% - 4px)); }
+.pin .tile { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; flex: none; }
+.pin .tile svg { width: 22px; height: 22px; }
+.pin b { display: block; font-size: 15px; line-height: 1.3; white-space: nowrap; }
+.pin .txt span { display: block; font-size: 13px; color: oklch(0.42 0.012 80); line-height: 1.4; }
+.toast { position: absolute; z-index: 2; left: 0; top: 0; transform: translate(-50%, 14px); padding: 8px 14px; border-radius: 10px; background: #fff3f3; color: oklch(0.42 0.17 28); border: 1px solid #f5c2c4; font-size: 13px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity 250ms ease; pointer-events: none; }
+.toast.on { opacity: 1; }
+.t-patrol { background: linear-gradient(135deg, #F2A516, #D9690B); }
+.t-vouch { background: #17181a; box-shadow: inset 0 0 0 1px oklch(1 0 0 / .18); }
+
+/* 故事模式：樣式在 story.css；這裡只讓首頁文字、標籤、翻頁鈕、章節選單退場 */
+body.in-story .p-hello .copy, body.in-story .pin, body.in-story .pager, body.in-story .top nav { opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 0s 300ms; }
+.p-hello .copy, .pager, .top nav { transition: opacity 400ms ease 300ms; }
+
+/* ---------- 共用：白色島 ---------- */
+.isle { background: var(--paper); color: var(--ink); border-radius: 20px; box-shadow: 0 30px 50px -30px var(--shadow); }
+/* 手機 */
+.phone { width: clamp(200px, min(19vw, 40vh), 260px); aspect-ratio: 9 / 18.5; background: #111; border-radius: 34px; padding: 9px; box-shadow: 0 30px 50px -24px var(--shadow); flex: none; }
+.phone .scr { height: 100%; border-radius: 26px; background: var(--paper); color: var(--ink); overflow: hidden; display: flex; flex-direction: column; font-size: 12px; line-height: 1.45; }
+/* 發票（統一發票電子證明聯的樣子；示意資料） */
+.inv { width: clamp(210px, 18vw, 260px); background: var(--paper); color: var(--ink); padding: 18px 18px 14px; transform: rotate(-3deg); box-shadow: 0 30px 50px -26px var(--shadow); position: relative; overflow: hidden; font-size: 12px; }
+.inv .t { text-align: center; font-weight: 900; letter-spacing: .14em; }
+.inv .big { text-align: center; font-weight: 700; font-size: 17px; line-height: 1.3; padding: 4px 0 8px; border-bottom: 1.5px dashed oklch(0.8 0.01 85); font-variant-numeric: tabular-nums; }
+.inv .f { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid oklch(0.93 0.005 85); position: relative; }
+.inv .f::after { content: ""; position: absolute; inset: 3px -7px; border: 2px solid var(--scan); border-radius: 4px; opacity: 0; transition: opacity 250ms ease; }
+.read .inv .f::after { opacity: 1; }
+.read .inv .f:nth-of-type(2)::after { transition-delay: 120ms; } .read .inv .f:nth-of-type(3)::after { transition-delay: 240ms; }
+.inv .lines { display: grid; gap: 6px; margin-top: 10px; }
+.inv .lines i { height: 5px; background: oklch(0.93 0.005 85); border-radius: 3px; }
+.inv .lines i:nth-child(2) { width: 70%; }
+.inv .bars { margin-top: 10px; height: 26px; background: repeating-linear-gradient(90deg, oklch(0.2 0.01 80) 0 2px, transparent 2px 4px, oklch(0.2 0.01 80) 4px 5px, transparent 5px 8px); opacity: .85; }
+.inv .beam { position: absolute; left: 0; right: 0; top: -40px; height: 40px; background: linear-gradient(180deg, transparent, oklch(0.55 0.17 258 / 0.25)); border-bottom: 2px solid var(--scan); opacity: 0; }
+.scan .inv .beam { animation: beam 1100ms var(--ease) forwards; }
+@keyframes beam { 0% { top: -40px; opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+/* 每章結尾的小 CTA（ui-ux-pro-max：Scroll-Triggered Storytelling 每章結尾放迷你 CTA） */
+.mini { position: absolute; left: var(--pad-x); bottom: var(--s-6); font-size: var(--t-sm); font-weight: 700; color: var(--ink-2); display: flex; gap: var(--s-3); align-items: center; }
+.mini a { color: var(--ink); min-height: 44px; display: inline-flex; align-items: center; text-underline-offset: 4px; }
+
+/* 結尾頁：聯絡資訊與法律連結 */
+.direct { display: grid; gap: var(--s-2); }
+.direct a { font-size: var(--t-xl); font-weight: 800; text-decoration: none; width: fit-content; line-height: 1.4; min-height: 44px; display: inline-flex; align-items: center; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.direct a:hover { text-decoration-thickness: 3px; }
+.direct p { color: var(--ink-2); font-weight: 700; }
+.legal { position: absolute; left: var(--pad-x); bottom: var(--s-4); font-size: var(--t-sm); color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 0 var(--s-4); }
+.legal a { text-decoration-thickness: 1px; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center; }
+.legal span { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* 影片對話框 */
+.vbox { border: 0; padding: 0; background: #000; border-radius: 16px; width: min(92vw, 1100px); max-height: 92vh; margin: auto; overflow: hidden; }
+.vbox::backdrop { background: oklch(0.21 0.026 80 / 0.8); }
+.vbox video { display: block; width: 100%; max-height: 88vh; }
+.vbox .x { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border-radius: 8px; background: rgba(0,0,0,.55); color: #fff; font-size: 26px; line-height: 1; z-index: 1; }
+
+@keyframes rise { from { transform: translateY(105%); } }
+@keyframes fade { from { opacity: 0; transform: translateY(12px); } }
+@keyframes drop { from { opacity: 0; transform: translate(-50%, calc(-100% - 28px)) rotate(-6deg); } }
+@keyframes draw { from { transform: scaleX(0); } }
+
+@media (max-width: 960px) {
+  .page { overflow-y: auto; overflow-x: hidden; padding: 92px var(--pad-x) 112px; }
+  /* 手機：頁面可以上下捲，頂列加底色，捲動的內容不會蓋到品牌 Logo（故事模式時透明，不擋「離開故事」） */
+  .top { background: color-mix(in oklch, var(--bg) 94%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 1px 0 var(--rule); transition: background-color 300ms ease; }
+  html:not([data-theme="paper"]) .top { background: oklch(0.16 0.01 260 / .94); }
+  body.in-story .top { background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  /* 手機：每頁可往下捲，格線列照內容長，不要被壓成一個螢幕高（否則內容互相重疊） */
+  main > .page:not(.p-hello) { grid-template-rows: none; grid-auto-rows: max-content; align-content: start; }
+  .p-hello { overflow: hidden; padding: 0; }
+  .p-hello .copy { width: auto; height: auto; margin-top: 42vh; padding: 24px var(--pad-x) 100px; justify-content: flex-start; background: linear-gradient(180deg, color-mix(in oklch, var(--bg) 0%, transparent) 0, var(--bg) 28px); }
+  html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(180deg, oklch(0.16 0.01 260 / 0) 0, oklch(0.16 0.01 260) 28px); }
+  .p-hello .intro { font-size: var(--t-base); }
+  .p-hello h1 { margin-top: var(--s-3); }
+  .p-hello .acts { margin-top: var(--s-5); }
+  .pin { padding: 6px 10px 6px 6px; } .pin .tile { width: 32px; height: 32px; border-radius: 9px; } .pin .tile svg { width: 18px; height: 18px; } .pin .txt span { display: none; }
+  .legal, .mini { position: static; margin-top: var(--s-6); }
+}
+@media (max-width: 640px) {
+  .top { height: 64px; }
+  body.in-story .crumb { opacity: 0; visibility: hidden; }   /* 故事中頂列讓給「離開故事」 */
+  .top nav button { display: none; }
+  .pager { left: 0; right: 0; bottom: 0; padding: var(--s-3) var(--pad-x) calc(var(--s-3) + env(safe-area-inset-bottom)); background: var(--bg); box-shadow: 0 -1px 0 var(--rule); justify-content: space-between; }
+  .pager .next { flex: 1; justify-content: center; }
+  .direct a { font-size: var(--t-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
