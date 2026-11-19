@@ -50,7 +50,6 @@
     var PARK = { x: 0, y: 9, w: 3, d: 4 };
     var FUTURE = { x: 9, y: 0, w: 4, d: 3 };   // 下一個角落：還沒點亮，有塔吊在施工（產品越多，亮的街區越多）
     var SITE = { x: 10, y: 0, w: 2, d: 2 };    // 工地
-    var EXT = 9;   // 城市外圍再鋪一圈地面與遠處建築：放大或移動鏡頭時，畫面邊緣不會是空白
     var CLIENT = { x: 6.15, y: 4.15, w: .8, d: 1.72, h: 2.7 };   // 客戶公司（T-Vouch 的使用者）：在信誌科技大樓旁邊，會計部在右側那一面
     var buildings = [], trees = [];
     function inRect(x, y, r) { return x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.d; }
@@ -65,13 +64,6 @@
     }
     buildings.push({ x: CLIENT.x, y: CLIENT.y, w: CLIENT.w, d: CLIENT.d, h: CLIENT.h, c: P.blds[1], seed: 777, roof: false, client: true });
     buildings.forEach(function (b) { if (Math.floor(b.x) === 6 && Math.floor(b.y) === 6) b.h = Math.min(b.h, 1); });   // 客戶公司前面那棟壓低
-    // 城市外圍：一圈遠處的低矮建築（只畫外形、不畫窗戶），鏡頭拉遠或放大時邊緣不會是一片空地；用另一組亂數，不影響城市本身的配置
-    var rf = rng(97);
-    for (var fx = -EXT; fx < N + EXT; fx++) for (var fy = -EXT; fy < N + EXT; fy++) {
-      if (fx >= 0 && fy >= 0 && fx < N && fy < N) continue;
-      if (rf() < .08) continue;
-      buildings.push({ x: fx + .1, y: fy + .1, w: .8, d: .8, h: .5 + rf() * 1.6, c: P.blds[Math.floor(rf() * 5)], seed: 0, far: true });
-    }
     for (var i = 0; i < 16; i++) trees.push({ x: PARK.x + .4 + rnd() * (PARK.w - .8), y: PARK.y + .4 + rnd() * (PARK.d - .8), r: .26 + rnd() * .16 });
 
     // 窗戶亮暗（每棟一組，慢慢變）
@@ -157,7 +149,6 @@
       }
     }
     function drawBuilding(b) {
-      if (b.far) { var fc = theme === 'dusk' ? P.dim : b.c; box(b.x, b.y, b.w, b.d, b.h, mix(fc, 1.02), mix(fc, .9), mix(fc, .78)); return; }   // 外圍遠處的建築：只畫外形
       if (b.dark) {   // 未點亮：灰暗、窗戶不亮
         var c = P.dim; box(b.x, b.y, b.w, b.d, b.h, mix(c, 1.04), mix(c, .9), mix(c, .78));
         faceWindows(b, b.x, b.y, b.w, b.d, b.h, P.dimWin, P.dimWin); return;
@@ -323,8 +314,7 @@
       }); });
     }
     function drawGround() {
-      for (var x = -EXT; x < N + EXT; x++) for (var y = -EXT; y < N + EXT; y++) {
-        if (x < 0 || y < 0 || x >= N || y >= N) { poly([iso(x, y), iso(x + 1, y), iso(x + 1, y + 1), iso(x, y + 1)], (x + y) % 2 ? mix(P.walk, .95) : mix(P.walk, .93)); continue; }   // 外圍只鋪地，不畫空馬路
+      for (var x = 0; x < N; x++) for (var y = 0; y < N; y++) {
         var road = isRoad(x, y), col;
         if (road) col = P.road;
         else if (inRect(x, y, PARK)) col = (x + y) % 2 ? P.grass : P.grass2;

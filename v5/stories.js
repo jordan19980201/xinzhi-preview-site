@@ -25,9 +25,9 @@
         chapters: [
           { t: '月底', at: 0, h: '會計部，一疊發票等著輸入。', p: '日期、統編、金額，一張一張打進系統，又慢又容易出錯。', cam: { x: P.client.x + .3, y: P.client.y, z: 2.2, zoom: 2.9 }, beat: 'pile', marks: [{ at: 'client', t: '客戶公司・會計部：一疊發票等著輸入', delay: 1100 }],
             vis: '<div class="sv-pile" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="sv-note">示意：一個月下來，常常是幾百張。</p>' },
-          { t: '拍一下', at: .25, h: '拍照上傳，一張或一整疊。', p: '用手機拍，或一次上傳一整疊，AI 同步處理。', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'snap', marks: [{ at: 'client', t: '拍一下，上傳給 T-Vouch', delay: 900 }, { at: 'hq', t: '信誌科技', delay: 1300 }],
+          { t: '拍一下', at: .25, h: '拍照上傳，一張或一整疊。', p: '用手機拍，或一次上傳一整疊，AI 同步處理。', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'snap', marks: [{ at: 'client', t: '拍一下，上傳給 T-Vouch', delay: 900 }, { at: 'hq', t: 'T-Intelligence', delay: 1300 }],
             vis: '<p class="sv-chips"><span>JPG</span><span>PNG</span><span>PDF</span></p>' },
-          { t: 'AI 讀出來', at: .5, h: '欄位自己跑出來。', p: 'AI 擷取發票號碼、日期、統編、金額，你只要確認。', cam: { x: P.tower.x + .4, y: P.tower.y, z: 6, zoom: 1.6 }, ocr: true, beat: 'ai', marks: [{ at: 'ai', t: '信誌科技 T-Vouch：AI 讀出日期、統編、金額', cls: 'ok', delay: 1200 }],
+          { t: 'AI 讀出來', at: .5, h: '欄位自己跑出來。', p: 'AI 擷取發票號碼、日期、統編、金額，你只要確認。', cam: { x: P.tower.x + .4, y: P.tower.y, z: 6, zoom: 1.6 }, ocr: true, beat: 'ai', marks: [{ at: 'ai', t: 'T-Intelligence：AI 讀出日期、統編、金額', cls: 'ok', delay: 1200 }],
             vis: '<div class="sv-ocr js-ocr">' + V5Invoice({ ocr: true }) + '<dl><div><dt>日期</dt><dd>2026/10/16</dd></div><div><dt>賣方統編</dt><dd>53880413</dd></div><div><dt>金額</dt><dd>NT$ 1,280</dd></div></dl></div><p class="sv-note">示意資料，非實際系統畫面</p>' },
           { t: '匯出', at: .75, h: '確認後，直接進會計軟體。', p: '匯出 CSV，或用 RESTful API 接進現有的財務系統。', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'export', marks: [{ at: 'client', t: '回到客戶自己的會計軟體', delay: 1200 }],
             vis: '<table class="sv-csv"><thead><tr><th>日期</th><th>號碼</th><th>總計</th><th></th></tr></thead><tbody><tr><td>10/16</td><td>AB-12345678</td><td>1,280</td><td>✓</td></tr><tr><td>10/16</td><td>CD-20481937</td><td>360</td><td>✓</td></tr><tr><td>10/17</td><td>收據</td><td>2,450</td><td>✓</td></tr></tbody></table><p class="sv-note">→ 2026-10.csv（示意）</p>' },

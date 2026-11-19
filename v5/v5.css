@@ -79,7 +79,7 @@ main::-webkit-scrollbar { display: none; }
 .h-display { font-size: var(--t-display); line-height: 1.12; letter-spacing: -0.01em; }
 .h-2 { font-size: var(--t-2xl); line-height: 1.25; }
 .lead { color: var(--ink-2); font-size: var(--t-lg); line-height: 1.6; max-width: 26em; }
-mark.hl { background: var(--hi); color: var(--hi-ink); padding: 0 .18em; border-radius: 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+mark.hl { background: var(--hi); color: var(--hi-ink); display: inline-block; line-height: 1.12; padding: .06em .18em .1em; vertical-align: top; border-radius: 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
 /* ---------- 開場：鏡頭停在城市裡這個產品的角落 ---------- */
 .p-hello { padding: 0; }
