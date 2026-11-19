@@ -54,7 +54,7 @@
       theme: document.documentElement.dataset.theme === 'paper' ? 'day' : 'dusk',
       frame: function (w, h) { return w < 961 ? { x: 4, y: 64, w: w - 8, h: h * .4 } : { x: w * .4, y: 70, w: w * .6, h: h - 110 }; },
       onAlert: function (on) { if (toast) toast.classList.toggle('on', on); },
-      onLayout: placePin, onFrame: placePin,
+      onLayout: placePin, onFrame: function () { placePin(); if (story) story.frame(); },
       anchor: function (w, h) {
         if (w < 961) return { x: .5, y: storyId ? .24 : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
         if (storyId) return { x: .6, y: .36 };
@@ -62,6 +62,7 @@
         var c = CAMS[curId] || {}; return { x: c.ax || .64, y: c.ay || .5 };
       }
     });
+    hello.addEventListener('scroll', placePin, { passive: true });
     var P = city.places, HOME = cfg.home(P), CAMS = cfg.cams ? cfg.cams(P) : {}, strayOn = false;
     function camFor(id) { return id === 'hello' ? HOME : CAMS[id] || HOME; }
     // 每一頁一個鏡頭位置與城市事件（例如「老師最怕的事」那頁，學生真的走出範圍）
@@ -76,8 +77,9 @@
     }
     function placePin() {
       var s = city.spots();
-      if (pin) { pin.style.left = s[cfg.spot].x + 'px'; pin.style.top = Math.max((innerWidth < 641 ? 64 : 76) + pin.offsetHeight + 4, s[cfg.spot].y) + 'px'; }   // 標籤不要壓到頂列
-      if (toast) { toast.style.left = s.stray.x + 'px'; toast.style.top = s.stray.y + 'px'; }
+      var st = hello.scrollTop;   // 手機開場頁可以往下捲：加上捲動距離，標籤才會一直貼在固定不動的城市上
+      if (pin) pin.style.translate = s[cfg.spot].x.toFixed(2) + 'px ' + ((st > 0 ? s[cfg.spot].y : Math.max((innerWidth < 641 ? 64 : 76) + pin.offsetHeight + 4, s[cfg.spot].y)) + st).toFixed(2) + 'px';   // 標籤不要壓到頂列
+      if (toast) toast.style.translate = s.stray.x.toFixed(2) + 'px ' + (s.stray.y + st).toFixed(2) + 'px';
     }
     // 進場：先停在整座城一下，再飛進角落（減少動態時直接到位）
     setTimeout(function () { if (!storyId) city.flyTo(camFor(curId), 2200); }, reduced ? 0 : 700);
@@ -86,7 +88,7 @@
     // ---------- 故事（播放器在 stories.js，官網共用） ----------
     var storyEl = hello.querySelector('.story'); storyEl.innerHTML = window.V5StoryHTML;
     var story = window.V5Story({ city: city, root: hello, main: main, reduced: reduced, toast: toast, home: HOME, stories: cfg.stories(P),
-      onOpen: function () { storyId = true; strayOn = false; if (idx !== 0) { main.scrollLeft = 0; sync(); } },
+      onOpen: function () { storyId = true; strayOn = false; hello.scrollTop = 0; if (idx !== 0) { main.scrollLeft = 0; sync(); } },
       onClose: function (goTo) { storyId = null; if (goTo) go(byId(goTo)); } });
 
     // ---------- 影片 ----------

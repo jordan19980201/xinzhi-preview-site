@@ -106,7 +106,7 @@ html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(90de
 .p-hello .acts { margin-top: var(--s-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); }
 .p-hello .fine { margin-top: var(--s-4); font-size: var(--t-sm); color: var(--ink-2); }
 .p-hello .intro, .p-hello .acts, .p-hello .fine { animation: fade 700ms var(--ease) 360ms both; }
-.pin { position: absolute; z-index: 2; left: 0; top: 0; display: flex; text-align: left; font: inherit; align-items: center; gap: var(--s-3); padding: 8px 14px 8px 8px; border-radius: 999px; text-decoration: none;
+.pin { position: absolute; z-index: 2; left: 0; top: 0; will-change: translate; display: flex; text-align: left; font: inherit; align-items: center; gap: var(--s-3); padding: 8px 14px 8px 8px; border-radius: 999px; text-decoration: none;
   background: oklch(1 0 0 / .94); color: oklch(0.2 0.012 80); box-shadow: 0 12px 26px -12px oklch(0 0 0 / .45); transform: translate(-50%, -100%); transition: transform 250ms var(--ease), box-shadow 250ms var(--ease); animation: drop 700ms var(--ease) 1600ms both; }
 .pin::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: inherit; transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
 .pin:hover, .pin:focus-visible { transform: translate(-50%, calc(-100% - 4px)); }
@@ -175,7 +175,9 @@ body.in-story .p-hello .copy, body.in-story .pin, body.in-story .pager, body.in-
   body.in-story .top { background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
   /* 手機：每頁可往下捲，格線列照內容長，不要被壓成一個螢幕高（否則內容互相重疊） */
   main > .page:not(.p-hello) { grid-template-rows: none; grid-auto-rows: max-content; align-content: start; }
-  .p-hello { overflow: hidden; padding: 0; }
+  .p-hello { overflow-x: hidden; overflow-y: auto; padding: 0; }   /* 手機：開場內容比螢幕長時可以往下捲 */
+  body.in-story .p-hello { overflow: hidden; }
+  .pin { z-index: 0; }   /* 往下捲時，文字區塊從城市標籤上面滑過去 */
   .p-hello .copy { width: auto; height: auto; margin-top: 42vh; padding: 24px var(--pad-x) 100px; justify-content: flex-start; background: linear-gradient(180deg, color-mix(in oklch, var(--bg) 0%, transparent) 0, var(--bg) 28px); }
   html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(180deg, oklch(0.16 0.01 260 / 0) 0, oklch(0.16 0.01 260) 28px); }
   .p-hello .intro { font-size: var(--t-base); }

@@ -40,13 +40,12 @@
   window.V5Story = function (opt) {
     var root = opt.root, storyEl = root.querySelector('.story'), steps = storyEl.querySelector('.story-steps'), body = storyEl.querySelector('.story-body');
     var STORIES = opt.stories, city = opt.city, reduced = opt.reduced;
-    var id = null, chap = 0, opener = null, rollTimer = 0, ocrTimer = 0, markRaf = 0;
+    var id = null, chap = 0, opener = null, rollTimer = 0, ocrTimer = 0;
     var marksEl = document.createElement('div'); marksEl.className = 'st-marks'; marksEl.setAttribute('aria-hidden', 'true'); storyEl.insertBefore(marksEl, storyEl.firstChild.nextSibling);
+    // 城市每畫一格就呼叫一次（frame），標籤和城市同一格移動，不會差一格而抖動
     function placeMarks() {
-      cancelAnimationFrame(markRaf);
       var W = innerWidth, topGap = (W < 641 ? 64 : 76) + 8;   // 標籤不要被頂列或螢幕邊緣切掉
-      [].forEach.call(marksEl.children, function (el) { var p = city.where && city.where(el.dataset.at); el.style.visibility = p ? 'visible' : 'hidden'; if (p) { var hw = el.offsetWidth / 2 + 8; el.style.left = Math.max(hw, Math.min(W - hw, p.x)) + 'px'; el.style.top = Math.max(topGap + el.offsetHeight + 12, p.y) + 'px'; } });
-      if (id && !reduced) markRaf = requestAnimationFrame(placeMarks);
+      [].forEach.call(marksEl.children, function (el) { var p = city.where && city.where(el.dataset.at); el.style.visibility = p ? 'visible' : 'hidden'; if (p) { var hw = el.offsetWidth / 2 + 8; el.style.translate = Math.max(hw, Math.min(W - hw, p.x)).toFixed(2) + 'px ' + Math.max(topGap + el.offsetHeight + 12, p.y).toFixed(2) + 'px'; } });
     }
     function open(sid, from) {
       var S = STORIES[sid]; if (!S) return;
@@ -62,7 +61,7 @@
     }
     function close(goTo) {
       if (!id) return;
-      clearInterval(rollTimer); clearTimeout(ocrTimer); id = null; cancelAnimationFrame(markRaf); marksEl.innerHTML = ''; if (city.setBeat) city.setBeat(null);
+      clearInterval(rollTimer); clearTimeout(ocrTimer); id = null; marksEl.innerHTML = ''; if (city.setBeat) city.setBeat(null);
       storyEl.hidden = true; document.body.classList.remove('in-story'); opt.main.style.overflowX = '';
       city.storyMode(false); city.setStray('back'); city.setPapers('flow'); city.flyTo(opt.home || null, 1300); if (opt.toast) opt.toast.classList.remove('on');
       if (opt.onClose) opt.onClose(goTo);
@@ -105,7 +104,7 @@
       else if (e.key === 'ArrowRight' && !e.target.closest('a, input')) { e.preventDefault(); e.stopImmediatePropagation(); if (chap < STORIES[id].chapters.length - 1) show(chap + 1); }
       else if (e.key === 'ArrowLeft' && !e.target.closest('a, input')) { e.preventDefault(); e.stopImmediatePropagation(); if (chap > 0) show(chap - 1); }
     }, true);
-    return { open: open, close: close, current: function () { return id; }, chapter: function () { return chap; } };
+    return { open: open, close: close, current: function () { return id; }, chapter: function () { return chap; }, frame: function () { if (id) placeMarks(); } };
   };
   // 故事的 HTML 骨架（兩邊共用）
   window.V5StoryHTML = '<div class="story-scrim"></div>' +
