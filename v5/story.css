@@ -4,14 +4,15 @@
 .story { position: absolute; inset: 0; z-index: 3; pointer-events: none; color: var(--ink); --st-bg: oklch(0.16 0.01 260); }
 html[data-theme="paper"] .story { --st-bg: oklch(0.985 0.002 85); }
 .story[hidden] { display: none; }
+.story-scrim::before { content: ""; position: absolute; inset: 0 0 auto; height: 120px; background: linear-gradient(180deg, color-mix(in oklch, var(--st-bg) 94%, transparent) 0, color-mix(in oklch, var(--st-bg) 70%, transparent) 55%, color-mix(in oklch, var(--st-bg) 0%, transparent) 100%); }   /* 上方淡底色：Logo 與離開故事看得清楚 */
 .story > * { pointer-events: auto; }
 .story-scrim { position: absolute; inset: 0; pointer-events: none !important; background: linear-gradient(0deg, var(--st-bg) 0%, color-mix(in oklch, var(--st-bg) 94%, transparent) 36%, color-mix(in oklch, var(--st-bg) 0%, transparent) 70%); animation: st-fade 700ms ease both; }
 .story-head { position: absolute; left: var(--pad-x); right: var(--pad-x); top: 0; height: 76px; display: flex; align-items: center; justify-content: flex-end; gap: var(--s-4); }
 .story-kick { font-weight: 700; font-size: 15px; color: var(--ink-2); margin-bottom: var(--s-3); }
 .story-kick b { color: var(--ink); }
-.story-x { min-height: 44px; padding: 0 4px; font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
-.story-x span { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
-.story-x:hover span { text-decoration-thickness: 3px; }
+.story-x { min-height: 44px; padding: 0 16px; font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; color: var(--ink); border-radius: 999px; background: color-mix(in oklch, var(--st-bg) 88%, transparent); box-shadow: 0 6px 18px -8px oklch(0 0 0 / .35), inset 0 0 0 1px var(--rule); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }   /* 有底色，城市上也看得清楚 */
+.story-x span { text-decoration: none; }
+.story-x:hover { box-shadow: 0 6px 18px -8px oklch(0 0 0 / .35), inset 0 0 0 1.5px var(--ink); }
 .story-x svg { width: 18px; height: 18px; }
 .story-body { position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 112px; display: grid; grid-template-columns: minmax(0, 34em) auto; justify-content: space-between; align-items: end; gap: var(--s-7); }
 .story-body.swap .story-time { animation: st-tc 600ms var(--ease) both; }
@@ -49,7 +50,8 @@ html[data-theme="paper"] .story-time { color: var(--ink); }
 
 /* 每一幕的小東西：直接放在畫面上，不另外框起來 */
 .sv-devs { display: flex; align-items: flex-end; gap: var(--s-5); }
-.sv-devs img { height: clamp(110px, 20vh, 180px); width: auto; filter: drop-shadow(0 18px 18px oklch(0 0 0 / .35)); }
+.sv-devs img { height: clamp(110px, 20vh, 180px); width: auto; }
+.sv-devs { padding-bottom: 10px; background: radial-gradient(ellipse 46% 9% at 50% 94%, oklch(0 0 0 / .16), transparent 70%); }   /* 照片下方一層淡淡的地面陰影（不用 filter，避免被捲動框切成方塊） */
 .sv-big { font-weight: 700; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; font-variant-numeric: tabular-nums; color: var(--ink); }
 .sv-big small { display: block; font-size: 15px; color: var(--ink-2); margin-top: 8px; letter-spacing: 0; }
 .sv-big .ok { color: oklch(0.72 0.15 150); }
@@ -94,7 +96,7 @@ html[data-theme="paper"] .sv-csv td:last-child { color: oklch(0.5 0.13 150); }
 @media (max-width: 960px) {
   .story-scrim { background: linear-gradient(0deg, var(--st-bg) 0%, var(--st-bg) 50%, color-mix(in oklch, var(--st-bg) 0%, transparent) 64%); }
   .story-kick { font-size: 13px; margin-bottom: var(--s-2); }
-  .story-body { bottom: 104px; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); max-height: 50dvh; overflow-y: auto; align-content: start; }
+  .story-body { padding-bottom: 12px; bottom: 96px; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); max-height: 50dvh; overflow-y: auto; align-content: start; }
   .sv-ocr { gap: var(--s-4); }
   .sv-ocr .einv { --ei-w: 128px; }
   .sv-ocr dl { min-width: 0; }
@@ -106,6 +108,10 @@ html[data-theme="paper"] .sv-csv td:last-child { color: oklch(0.5 0.13 150); }
   .story-foot { bottom: 16px; gap: var(--s-3); }
   .story-steps { margin: 0 18px; }
   .story-steps button { font-size: 0; min-width: 32px; }   /* 手機：只留刻度點，時間看大時間碼 */
+  .story-steps li, .story-steps li.up { top: 0; left: calc(var(--even) * 100%); }
+  .story-steps li.up button { grid-template-rows: none; padding-top: 6px; }
+  .story-steps li.up button::before { order: 0; }
+  .story-steps::after { width: calc(var(--pe, 0) * 100%); }
   .story-next { padding: 0 var(--s-4); }
   .sv-devs img { height: 76px; }
   .sv-alert { width: 100%; max-width: 320px; }

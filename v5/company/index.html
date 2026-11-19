@@ -148,9 +148,9 @@ html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(90de
 .pin .txt span { display: block; font-size: 13px; color: oklch(0.42 0.012 80); line-height: 1.4; }
 .pin { animation: drop 700ms var(--ease) both; } .pin.patrol { animation-delay: 500ms; } .pin.vouch { animation-delay: 650ms; }
 .pin-hq { position: absolute; z-index: 2; left: 0; top: 0; transform: translate(-50%, -100%); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; letter-spacing: .06em; background: #D4A94E; color: #1d1a12; white-space: nowrap; pointer-events: none; will-change: translate; box-shadow: 0 8px 18px -10px oklch(0 0 0 / .5); }   /* 信誌科技大樓 */
-.pin.patrol, .pin.vouch { width: 236px; }   /* 兩個產品標籤一樣大 */
+.pin.patrol, .pin.vouch { width: 262px; }   /* 兩個產品標籤一樣大 */
 .pin .txt { min-width: 0; } .pin .txt span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-@media (max-width: 960px) { .pin.patrol, .pin.vouch { width: 168px; } }   /* 手機：兩個一樣寬 */
+@media (max-width: 960px) { .pin.patrol, .pin.vouch { width: 214px; } }   /* 手機：兩個一樣寬 */
 /* 下一個角落（還沒點亮的街區） */
 .pin-next { position: absolute; z-index: 2; left: 0; top: 0; transform: translate(-50%, -100%); display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
   background: oklch(0.3 0.01 260 / .78); color: oklch(0.92 0.01 85); border: 1px dashed oklch(0.75 0.1 80 / .7); white-space: nowrap; pointer-events: none; animation: fade 700ms var(--ease) 900ms both; }
@@ -333,6 +333,9 @@ legend, label { font-weight: 700; font-size: 15px; }
 @media (max-width: 640px) {
   .page { padding: 84px var(--pad-x) 80px; }
   main > .page { overflow-y: hidden; }
+  /* 手機：內容頁整塊上下置中，不會上面擠、下面空 */
+  main > .page:not(.p-hello):not(.p-news):not(.p-device):not(.p-proof) { align-content: center; }
+
   main > .page:not(.p-hello) { row-gap: clamp(10px, 2vh, 18px); }
   .p-hello .copy { position: absolute; left: 0; right: 0; top: auto; bottom: 72px; height: auto; margin: 0; padding: 28px var(--pad-x) 10px; }
   /* 城市延伸到整支手機：文字區塊改成半透明底色，城市在文字後面也看得到 */
@@ -431,7 +434,7 @@ legend, label { font-weight: 700; font-size: 15px; }
     </div>
     <canvas class="city" aria-hidden="true"></canvas>
     <button class="pin patrol" type="button" data-story="patrol"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.2l7 2.8v5.2c0 4.4-2.9 8.1-7 9.6-4.1-1.5-7-5.2-7-9.6V6l7-2.8z"/></svg></span><span class="txt"><b>T-Patrol 平安福</b><span>學校・點我看故事</span></span></button>
-    <button class="pin vouch" type="button" data-story="vouch"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="txt"><b>T-Vouch</b><span>會計部・點我看故事</span></span></button>
+    <button class="pin vouch" type="button" data-story="vouch"><span class="tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="txt"><b>T-Vouch 智慧憑證辨識</b><span>會計部・點我看故事</span></span></button>
     <p class="toast" role="status" aria-live="polite"><b>王小明</b> 離開了安全範圍・老師手機已通知</p>
     <p class="pin-hq">T-Intelligence</p>
     <p class="pin-next" aria-label="下一個角落：建設中，下一條產品線會在這裡點亮"><span class="crane" aria-hidden="true"></span>下一個角落・建設中</p>
@@ -578,7 +581,7 @@ legend, label { font-weight: 700; font-size: 15px; }
     onLayout: placePins,
     onFrame: function () { if (storyId || !city.spots().home) placePins(); if (story) story.frame(); },
     // 故事模式時，鏡頭把焦點放在面板旁邊（電腦：右側；手機：上半部）
-    anchor: function (w, h) { if (w < 641 && !storyId && curId === 'hello') return { x: .5, y: (64 + copy.getBoundingClientRect().top) / 2 / h }; if (w < 961) return { x: .5, y: storyId ? .24 : .27 }; return storyId ? { x: .6, y: .36 } : { x: .5, y: .5 }; }
+    anchor: function (w, h) { if (w < 641 && !storyId && curId === 'hello') return { x: .5, y: (64 + copy.getBoundingClientRect().top) / 2 / h }; if (w < 961) return { x: .5, y: storyId ? .33 : .27 }; return storyId ? { x: .6, y: .36 } : { x: .5, y: .5 }; }
   });
   // 每一頁的城市鏡頭：實績拉遠看整座城、關於看辦公區、聯絡看還在施工的「下一個角落」
   var CP = city.places, CAMS = { proof: { x: 7, y: 7, z: 0, zoom: 1.05 }, about: { x: CP.tower.x, y: CP.tower.y, z: 2.4, zoom: 1.6 }, talk: { x: CP.site.x, y: CP.site.y, z: 2, zoom: 1.9 } };

@@ -204,6 +204,9 @@ body.in-story .p-hello .copy, body.in-story .pin-hq, body.in-story .pin, body.in
 @media (max-width: 640px) {
   .page { padding: 84px var(--pad-x) 80px; }
   main > .page { overflow-y: hidden; }
+  /* 手機：內容頁整塊上下置中，不會上面擠、下面空 */
+  main > .page:not(.p-hello):not(.p-news):not(.p-device):not(.p-proof) { align-content: center; }
+
   main > .page:not(.p-hello) { row-gap: clamp(10px, 2vh, 18px); column-gap: 0; }
   .p-hello .copy { position: absolute; left: 0; right: 0; top: auto; bottom: 72px; height: auto; margin: 0; padding: 28px var(--pad-x) 10px; }
   /* 城市延伸到整支手機：文字區塊改成半透明底色，城市在文字後面也看得到 */

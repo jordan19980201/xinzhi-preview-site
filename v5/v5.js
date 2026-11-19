@@ -57,7 +57,7 @@
       minZoom: function (w) { return w < 641 ? 1.8 : 0; },   // 手機：城市放大填滿畫面
       onLayout: placePin, onFrame: function () { placePin(); if (story) story.frame(); },
       anchor: function (w, h) {
-        if (w < 961) return { x: .5, y: storyId ? .24 : w < 641 && curId === 'hello' ? (64 + copy.getBoundingClientRect().top) / 2 / h : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
+        if (w < 961) return { x: .5, y: storyId ? .33 : w < 641 && curId === 'hello' ? (64 + copy.getBoundingClientRect().top) / 2 / h : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
         if (storyId) return { x: .6, y: .36 };
         if (curId === 'hello') return { x: .72, y: .56 };
         var c = CAMS[curId] || {}; return { x: c.ax || .64, y: c.ay || .5 };

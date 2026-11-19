@@ -4,19 +4,20 @@
 (function () {
   function day(hm) { var p = hm.split(':'), m = +p[0] * 60 + +p[1]; return (m - 480) / (1050 - 480); }
   window.V5Stories = function (P, site) {
+    var SCHOOL_CAM = { x: 11.6, y: 12.4, z: .3, zoom: innerWidth < 641 ? 3.1 : 2.7 };   // 校外教學的一天：鏡頭固定在學校，五幕只有劇情在動
     var co = site === 'company';
     return {
       patrol: { title: '<b>T-Patrol 平安福</b>　校外教學的一天', endTo: co ? null : 'device', endLabel: co ? '回到城市' : '看裝置',
         chapters: [
-          { t: '08:00', at: day('08:00'), h: '七年一班，校外教學出發。', p: '每個學生戴上識別證套或手環。學生證直接放進證套，和平常一樣掛在胸前。', cam: { x: 9.6, y: 13, z: .3, zoom: 2.3 }, beat: 'bus-in', marks: [{ at: 'bus', t: '七年一班・出發', delay: 3000 }],
+          { t: '08:00', at: day('08:00'), h: '七年一班，校外教學出發。', p: '每個學生戴上識別證套或手環。學生證直接放進證套，和平常一樣掛在胸前。', cam: SCHOOL_CAM, beat: 'bus-in', marks: [{ at: 'bus', t: '七年一班・出發', delay: 3000 }],
             vis: '<div class="sv-devs"><img src="../../t-patrol/assets/device-card.webp" alt="識別證套式定位裝置"><img src="../../t-patrol/assets/device-band.webp" alt="手環式定位裝置"></div>' },
-          { t: '10:30', at: day('10:30'), h: '自由活動，全班在哪一眼看完。', p: '老師手機上的地圖即時顯示每個學生的位置，不用一個一個打電話。', cam: { x: P.field.x - .3, y: P.field.y + .3, z: .2, zoom: 3.1 }, beat: 'pings', marks: [{ at: 'teacher', t: '老師的手機：14 / 14 在範圍內', cls: 'ok', delay: 1200 }],
+          { t: '10:30', at: day('10:30'), h: '自由活動，全班在哪一眼看完。', p: '老師手機上的地圖即時顯示每個學生的位置，不用一個一個打電話。', cam: SCHOOL_CAM, beat: 'pings', marks: [{ at: 'teacher', t: '老師的手機：14 / 14 在範圍內', cls: 'ok', delay: 1200 }],
             vis: '<p class="sv-big"><span class="ok">14</span> / 14<small>七年一班・在範圍內</small></p>' },
-          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了。', p: '在學校後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知。', cam: { x: P.gate.x - 1.1, y: P.gate.y - .9, z: .2, zoom: 3 }, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
+          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了。', p: '在學校後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知。', cam: SCHOOL_CAM, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
             vis: '<div class="sv-alert" role="img" aria-label="手機通知：王小明已離開設定範圍"><i></i><b>T-Patrol 平安福</b><time>11:12</time><span>王小明 已離開設定範圍</span></div>' },
-          { t: '11:30', at: day('11:30'), h: '集合，按一下就點完名。', p: '誰到了、誰還沒到，秒看清楚。王小明也回來了。', cam: { x: P.field.x - .5, y: P.field.y + .4, z: .2, zoom: 3.2 }, stray: 'back', roll: true, beat: 'gather', marks: [{ at: 'teacher', t: '一鍵點名：全員到齊', cls: 'ok', delay: 4200 }],
+          { t: '11:30', at: day('11:30'), h: '集合，按一下就點完名。', p: '誰到了、誰還沒到，秒看清楚。王小明也回來了。', cam: SCHOOL_CAM, stray: 'back', roll: true, beat: 'gather', marks: [{ at: 'teacher', t: '一鍵點名：全員到齊', cls: 'ok', delay: 4200 }],
             vis: '<ul class="sv-roll js-roll"><li><em>·</em>陳同學</li><li><em>·</em>林同學</li><li><em>·</em>黃同學</li><li><em>·</em>張同學</li><li><em>·</em>李同學</li><li><em>·</em>王小明</li></ul><p class="sv-sum js-sum">已到 0 / 14</p>' },
-          { t: '17:30', at: 1, h: '平安回家。', p: '活動軌跡保留 6 個月，事後有據。2026 年，T-Patrol 陪七所學校出門：', cam: { x: 13.6, y: 13.6, z: .2, zoom: 1.9 }, beat: 'bus-out', marks: [{ at: 'bus', t: '平安回家', cls: 'ok', delay: 500 }],
+          { t: '17:30', at: 1, h: '平安回家。', p: '活動軌跡保留 6 個月，事後有據。2026 年，T-Patrol 陪七所學校出門：', cam: SCHOOL_CAM, beat: 'bus-out', marks: [{ at: 'bus', t: '平安回家', cls: 'ok', delay: 500 }],
             vis: '<div class="sv-stats"><div><b>7</b><span>所學校</span></div><div><b>27</b><span>天活動</span></div><div><b>0</b><span>件事故</span></div></div>' +
               (co ? '<div class="sv-cta"><a class="btn" href="?subject=T-Patrol#talk" data-close-to="talk">預約免費試辦</a><a class="go" href="../t-patrol/">看 T-Patrol 網站</a></div>'
                   : '<div class="sv-cta"><a class="btn" href="#start" data-close-to="start">預約免費試辦</a></div>') }
@@ -52,12 +53,12 @@
       id = sid; opener = from || null; chap = 0;
       storyEl.querySelector('.story-kick').innerHTML = S.title;
       steps.innerHTML = '';
-      S.chapters.forEach(function (c, i) { var li = document.createElement('li'), b = document.createElement('button'); li.style.setProperty('--at', c.at); if (i > 0 && c.at - S.chapters[i - 1].at < .05 && !(steps.lastChild && steps.lastChild.className === 'up')) li.className = 'up'; /* 太近就放線上方；上下交錯 */ b.type = 'button'; b.textContent = c.t; b.setAttribute('aria-label', '第 ' + (i + 1) + ' 幕：' + c.t); b.addEventListener('click', function () { show(i); }); li.appendChild(b); steps.appendChild(li); });
+      S.chapters.forEach(function (c, i) { var li = document.createElement('li'), b = document.createElement('button'); li.style.setProperty('--at', c.at); li.style.setProperty('--even', S.chapters.length > 1 ? i / (S.chapters.length - 1) : 0); if (i > 0 && c.at - S.chapters[i - 1].at < .05 && !(steps.lastChild && steps.lastChild.className === 'up')) li.className = 'up'; /* 太近就放線上方；上下交錯 */ b.type = 'button'; b.textContent = c.t; b.setAttribute('aria-label', '第 ' + (i + 1) + ' 幕：' + c.t); b.addEventListener('click', function () { show(i); }); li.appendChild(b); steps.appendChild(li); });
       document.body.classList.add('in-story'); opt.main.style.overflowX = 'hidden';
       storyEl.hidden = false; city.storyMode(true);
       if (opt.onOpen) opt.onOpen(sid);
       show(0);
-      storyEl.querySelector('.story-x').focus({ preventScroll: true });
+      storyEl.querySelector('.story-x').focus({ preventScroll: true, focusVisible: false });   /* 焦點移到離開故事（給鍵盤與螢幕報讀），觸控時不畫粗框 */
     }
     function close(goTo) {
       if (!id) return;
@@ -70,7 +71,7 @@
     function show(i) {
       var S = STORIES[id], c = S.chapters[i]; chap = i;
       [].forEach.call(steps.querySelectorAll('button'), function (b, k) { b.setAttribute('aria-current', k === i ? 'step' : 'false'); b.classList.toggle('done', k < i); });
-      steps.style.setProperty('--p', c.at);
+      steps.style.setProperty('--p', c.at); steps.style.setProperty('--pe', S.chapters.length > 1 ? i / (S.chapters.length - 1) : 0);
       body.classList.remove('swap'); void body.offsetWidth; body.classList.add('swap');
       body.querySelector('.story-time').textContent = c.t;
       body.querySelector('.story-h').innerHTML = c.h.split(/(?<=，)/).map(function (seg) { return '<span class="nw">' + seg + '</span>'; }).join('');
