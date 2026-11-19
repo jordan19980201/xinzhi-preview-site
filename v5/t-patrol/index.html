@@ -186,6 +186,66 @@
   .p-proof .stats { gap: var(--s-5); }
   .roles { flex-wrap: wrap; }
 }
+
+/* ---------- 手機：每頁一個畫面裝得下（使用者 2026-11-19）；重點留下、補充說明省略，電腦版不變 ---------- */
+@media (max-width: 640px) {
+  .p-worry h2, .p-news h2, .p-device h2, .p-start h2 { font-size: clamp(1.55rem, 4.5vh, 2.1rem); }
+  .worry li { padding: 8px 0; grid-template-columns: 1fr; gap: 0; }
+  .worry b { font-size: 1rem; }
+  .worry span { font-size: 13px; line-height: 1.45; }
+  .p-news { gap: 10px; }
+  .news { grid-template-columns: 1fr 1fr; gap: 10px 14px; align-self: start; }
+  .news article, .news article:first-child, .news article:nth-child(3) { padding: 8px 0 0; border: 0; border-top: 1px solid var(--rule); gap: 2px; }
+  .news time { font-size: 11px; line-height: 1.4; }
+  .news h3 { font-size: 13px; line-height: 1.35; }
+  .news p { display: none; }
+  .news strong { font-size: 13px; line-height: 1.4; padding-top: 4px; }
+  .src { font-size: 10px; }
+  .p-device .lead { margin-top: 6px; }
+  .explode { width: min(100%, calc(46vh * 600 / 520)); max-height: none; justify-self: start; }
+  .tags li { left: 64%; }
+  .p-wear h2 { font-size: 1.4rem; }
+  .wear { grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+  .wear article, .wear article + article { grid-template-columns: 1fr; gap: 6px; padding: 0; border: 0; }
+  .wear img { height: clamp(110px, 24vh, 180px); }
+  .wear h3 { font-size: 1rem; line-height: 1.3; }
+  .wear ul { margin-top: 6px; font-size: 13px; }
+  .wear p { font-size: 12px; margin-top: 4px; }
+  .p-system h2 { font-size: clamp(1.45rem, 4.2vh, 2rem); }
+  .roles { margin-top: 10px; }
+  .role-copy { margin-top: 10px; min-height: 0; }
+  .role-copy h3 { font-size: 1.1rem; }
+  .role-copy > p { font-size: 13px; }
+  .role-copy dl { margin-top: 8px; }
+  .role-copy dl div { padding: 6px 0; grid-template-columns: 1fr; gap: 0; }
+  .role-copy dt { font-size: 14px; }
+  .role-copy dd { font-size: 13px; }
+  .stage { display: none; }
+  .p-proof blockquote { font-size: 1.15rem; line-height: 1.35; }
+  .p-proof blockquote footer { margin-top: 4px; font-size: 11px; }
+  .p-proof .stats { margin-top: 10px; gap: 18px; }
+  .p-proof .stats b { font-size: 2.1rem; }
+  .p-proof .stats span { font-size: 11px; line-height: 1.35; }
+  .cases { grid-template-columns: 1fr 1fr; column-gap: 14px; }
+  .cases li { grid-template-columns: 1fr; gap: 0; padding: 5px 0; }
+  .cases li:first-child { border-top-width: 1px; }
+  .cases time { font-size: 11px; }
+  .cases b { font-size: 13px; line-height: 1.3; }
+  .cases b span { display: none; }
+  .cases em { font-size: 12px; grid-column: auto; }
+  .p-start .acts { margin-top: 10px; }
+  .plan li { padding: 6px 0; grid-template-columns: 1fr; gap: 0; }
+  .plan b { font-size: 14px; }
+  .plan span { font-size: 13px; }
+  .p-start .direct { margin-top: 8px; }
+}
+@media (max-width: 640px) and (max-height: 720px) {   /* 矮的手機：試辦頁再收緊（地址與版權列省略） */
+  .p-start { gap: 8px; }
+  .p-start h2 { font-size: 1.45rem; line-height: 1.2; }
+  .p-start .lead { font-size: 13px; margin-top: 6px; }
+  .plan li { padding: 4px 0; }
+  .p-start .direct p, .p-start .legal { display: none; }
+}
 </style>
 </head>
 <body>

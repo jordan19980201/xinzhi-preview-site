@@ -52,11 +52,11 @@
     var canvas = hello.querySelector('.city'); document.body.insertBefore(canvas, main);
     var city = window.__cityApi = window.City.mount(canvas, {
       theme: document.documentElement.dataset.theme === 'paper' ? 'day' : 'dusk',
-      frame: function (w, h) { return w < 961 ? { x: 4, y: 64, w: w - 8, h: h * .4 } : { x: w * .4, y: 70, w: w * .6, h: h - 110 }; },
+      frame: function (w, h) { return w < 641 ? { x: 4, y: 64, w: w - 8, h: Math.max(120, copy.getBoundingClientRect().top - 72) } : w < 961 ? { x: 4, y: 64, w: w - 8, h: h * .4 } : { x: w * .4, y: 70, w: w * .6, h: h - 110 }; },
       onAlert: function (on) { if (toast) toast.classList.toggle('on', on); },
       onLayout: placePin, onFrame: function () { placePin(); if (story) story.frame(); },
       anchor: function (w, h) {
-        if (w < 961) return { x: .5, y: storyId ? .24 : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
+        if (w < 961) return { x: .5, y: storyId ? .24 : w < 641 && curId === 'hello' ? (64 + copy.getBoundingClientRect().top) / 2 / h : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
         if (storyId) return { x: .6, y: .36 };
         if (curId === 'hello') return { x: .72, y: .56 };
         var c = CAMS[curId] || {}; return { x: c.ax || .64, y: c.ay || .5 };

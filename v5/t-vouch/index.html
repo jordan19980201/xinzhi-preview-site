@@ -129,6 +129,49 @@
   .scale b { font-size: 1rem; }
   .plan { padding: var(--s-5); }
 }
+
+/* ---------- 手機：每頁一個畫面裝得下（使用者 2026-11-19）；重點留下、補充說明省略，電腦版不變 ---------- */
+@media (max-width: 640px) {
+  .p-try h2, .p-how h2, .p-price h2, .p-go h2 { font-size: clamp(1.5rem, 4.4vh, 2rem); }
+  .p-try .lead { margin-top: 6px; }
+  .ocr { grid-template-columns: auto minmax(0, 1fr); gap: 22px; justify-items: stretch; align-items: center; }
+  .ocr .einv { --ei-w: clamp(120px, 33vw, 150px); }
+  .fields { gap: 8px; }
+  .fields div { grid-template-columns: 1fr; gap: 0; padding-bottom: 4px; }
+  .fields dt { font-size: 12px; }
+  .fields dd { font-size: 15px; }
+  .ocr .act { gap: 8px 12px; }
+  .ocr .status { font-size: 13px; }
+  .p-how h2 + p { font-size: 13px; margin-top: 4px; }
+  .belt { gap: 12px; align-self: start; }
+  .stop { display: grid; grid-template-columns: 40px 1fr; column-gap: 12px; align-items: center; }
+  .stop .n { width: 40px; height: 40px; grid-row: span 2; }
+  .stop .n svg { width: 18px; height: 18px; }
+  .stop h3 { margin-top: 0; font-size: 1.1rem; }
+  .stop > p { font-size: 13px; margin: 0; }
+  .stop dl { display: none; }
+  .secure { font-size: 13px; padding-top: 10px; gap: 2px 10px; }
+  .p-price .lead { font-size: 13px; margin-top: 4px; }
+  .qty { margin-top: 10px; }
+  .qty legend { font-size: 13px; margin-bottom: 2px; }
+  .scale b { font-size: 13px; }
+  .scale small { display: none; }
+  .p-price .more { display: none; }
+  .plan { padding: 14px 16px; }
+  .plan .name { font-size: 1rem; }
+  .plan .price { font-size: 2.1rem; margin-top: 4px; }
+  .plan .year { font-size: 12px; margin-top: 2px; }
+  .plan ul { margin-top: 8px; grid-template-columns: 1fr 1fr; column-gap: 10px; }
+  .plan li { padding: 4px 0; font-size: 12px; gap: 6px; }
+  .plan .btn { margin-top: 10px; min-height: 44px; }
+  .p-go .stack { display: none; }
+  .p-go .acts { margin-top: 12px; }
+  .p-go .direct { margin-top: 10px; }
+}
+@media (max-width: 640px) and (max-height: 720px) {   /* 矮的手機：再收緊（地址與版權列省略） */
+  .p-go .direct p, .p-go .legal { display: none; }
+  .p-try .lead { display: none; }
+}
 </style>
 </head>
 <body>

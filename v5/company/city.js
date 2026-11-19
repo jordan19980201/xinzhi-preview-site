@@ -107,7 +107,7 @@
     var PATROL_BEATS = { 'bus-in': 1, pings: 1, alert: 1, gather: 1, 'bus-out': 1 }, VOUCH_BEATS = { pile: 1, snap: 1, ai: 1, export: 1, done: 1 };
     var TEACHER = { x: 10.55, y: 12.2, ph: 0 };          // 帶隊老師（金色，手上有手機）
     var BUS_Y = 13.5, bus = { on: false, x: -1.5, from: -1.5, to: 10.3, t0: 0, dur: 4, leaving: false };
-    var FLOOR = { z0: 2.6, z1: 2.95 };                   // 會計部那一層
+    var FLOOR = { z0: 5.0, z1: 5.35 };                   // 會計部那一層：放在高樓上段（金色腰帶下面），周圍矮樓擋不到
     var ROUTE = [[6, 5], [8.5, 5], [8.5, 3.5], [13.5, 3.5], [13.5, 5.5], [14.3, 5.5]], ROUTE_LEN = 0;
     for (i = 1; i < ROUTE.length; i++) ROUTE_LEN += Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]);
     var packets = [], aiParts = [], flashT = -1e9, nextFx = 0;
@@ -418,7 +418,7 @@
         var pul = .45 + Math.sin(now / 300) * .15; towerFace(FLOOR.z0, FLOOR.z1, 'rgba(212,169,78,' + pul.toFixed(2) + ')');
       }
       if (beat === 'pile') {   // 桌上的發票越疊越高
-        var n = Math.min(14, Math.floor((now - beatT0) / 260)), base = iso(TOWER.x + TOWER.w - .25, TOWER.y + TOWER.d - .05, FLOOR.z1 + .02);
+        var n = Math.min(14, Math.floor((now - beatT0) / 260)), base = iso(TOWER.x + TOWER.w - .32, TOWER.y + TOWER.d - .32, TOWER.h - 1.5 + .08);   // 疊在高樓退縮處的平台上
         for (i = 0; i < n; i++) { ctx.fillStyle = i % 2 ? '#f4f1ea' : '#ffffff'; ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = .6 * k; var sx = base[0] + Math.sin(i * 1.7) * 1.2 * k, sy = base[1] - i * 1.6 * k; ctx.beginPath(); ctx.moveTo(sx - 7 * k, sy); ctx.lineTo(sx, sy - 3.5 * k); ctx.lineTo(sx + 7 * k, sy); ctx.lineTo(sx, sy + 3.5 * k); ctx.closePath(); ctx.fill(); ctx.stroke(); }
       }
       if (beat === 'snap' && now - flashT < 260) {   // 拍照的閃光
@@ -565,7 +565,7 @@
     }
     // 鏡頭一直有一點點緩慢漂移（像空拍機懸停），城市不會看起來像一張靜止圖；減少動態時不漂移
     var V = { fx: 0, fy: 0, z: 1 };
-    function view() { var k = reduced ? 0 : 1; V.fx = cam.fx + Math.sin(now / 7000) * 16 * k; V.fy = cam.fy + Math.cos(now / 9000) * 8 * k; V.z = cam.z * (1 + Math.sin(now / 11000) * .025 * k); return V; }
+    function view() { var k = reduced ? 0 : 1; V.fx = cam.fx + Math.sin(now / 9000) * 2.5 * k / cam.z; V.fy = cam.fy + Math.cos(now / 11000) * 1.5 * k / cam.z; V.z = cam.z * (1 + Math.sin(now / 13000) * .008 * k); /* 幅度很小，依鏡頭遠近換算成固定的螢幕距離（拉近時不會晃得更大） */ return V; }
     function camXY(p) { view(); return [cam.ax * cw + (p[0] - V.fx) * V.z, cam.ay * ch + (p[1] - V.fy) * V.z]; }
     function draw() {
       stepCam();

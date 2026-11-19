@@ -23,9 +23,9 @@
         ] },
       vouch: { title: '<b>T-Vouch</b>　一張發票的旅程', endTo: co ? null : 'try', endLabel: co ? '回到城市' : '自己試一次',
         chapters: [
-          { t: '月底', at: 0, h: '會計部，一疊發票等著輸入。', p: '日期、統編、金額，一張一張打進系統，又慢又容易出錯。', cam: { x: P.tower.x, y: P.tower.y, z: 3, zoom: 2.6 }, beat: 'pile', marks: [{ at: 'floor', t: '會計部：一疊發票等著輸入', delay: 1100 }],
+          { t: '月底', at: 0, h: '會計部，一疊發票等著輸入。', p: '日期、統編、金額，一張一張打進系統，又慢又容易出錯。', cam: { x: P.tower.x, y: P.tower.y, z: 5.2, zoom: 2.6 }, beat: 'pile', marks: [{ at: 'floor', t: '會計部：一疊發票等著輸入', delay: 1100 }],
             vis: '<div class="sv-pile" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="sv-note">示意：一個月下來，常常是幾百張。</p>' },
-          { t: '拍一下', at: .25, h: '拍照上傳，一張或一整疊。', p: '用手機拍，或一次上傳一整疊，AI 同步處理。', cam: { x: P.tower.x + .4, y: P.tower.y, z: 3.4, zoom: 2.4 }, beat: 'snap', marks: [{ at: 'floor', t: '拍一下，上傳', delay: 900 }],
+          { t: '拍一下', at: .25, h: '拍照上傳，一張或一整疊。', p: '用手機拍，或一次上傳一整疊，AI 同步處理。', cam: { x: P.tower.x + .4, y: P.tower.y, z: 5.3, zoom: 2.4 }, beat: 'snap', marks: [{ at: 'floor', t: '拍一下，上傳', delay: 900 }],
             vis: '<p class="sv-chips"><span>JPG</span><span>PNG</span><span>PDF</span></p>' },
           { t: 'AI 讀出來', at: .5, h: '欄位自己跑出來。', p: 'AI 擷取發票號碼、日期、統編、金額，你只要確認。', cam: { x: P.tower.x, y: P.tower.y, z: 7.4, zoom: 1.9 }, ocr: true, beat: 'ai', marks: [{ at: 'ai', t: 'AI 讀出日期、統編、金額', cls: 'ok', delay: 1200 }],
             vis: '<div class="sv-ocr js-ocr">' + V5Invoice({ ocr: true }) + '<dl><div><dt>日期</dt><dd>2026/10/16</dd></div><div><dt>賣方統編</dt><dd>53880413</dd></div><div><dt>金額</dt><dd>NT$ 1,280</dd></div></dl></div><p class="sv-note">示意資料，非實際系統畫面</p>' },
