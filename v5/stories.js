@@ -13,7 +13,7 @@
             vis: '<div class="sv-devs"><img src="../../t-patrol/assets/device-card.webp" alt="識別證套式定位裝置"><img src="../../t-patrol/assets/device-band.webp" alt="手環式定位裝置"></div>' },
           { t: '10:30', at: day('10:30'), h: '自由活動，全班在哪一眼看完。', p: '老師手機上的地圖即時顯示每個學生的位置，不用一個一個打電話。', cam: SCHOOL_CAM, beat: 'pings', marks: [{ at: 'teacher', t: '老師的手機：14 / 14 在範圍內', cls: 'ok', delay: 1200 }],
             vis: '<p class="sv-big"><span class="ok">14</span> / 14<small>七年一班・在範圍內</small></p>' },
-          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了。', p: '在學校後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知。', cam: SCHOOL_CAM, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
+          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了。', p: '在管理後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知。', cam: SCHOOL_CAM, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
             vis: '<div class="sv-alert" role="img" aria-label="手機通知：王小明已離開設定範圍"><i></i><b>T-Patrol 平安福</b><time>11:12</time><span>王小明 已離開設定範圍</span></div>' },
           { t: '11:30', at: day('11:30'), h: '集合，按一下就點完名。', p: '誰到了、誰還沒到，秒看清楚。王小明也回來了。', cam: SCHOOL_CAM, stray: 'back', roll: true, beat: 'gather', marks: [{ at: 'teacher', t: '一鍵點名：全員到齊', cls: 'ok', delay: 4200 }],
             vis: '<ul class="sv-roll js-roll"><li><em>·</em>陳同學</li><li><em>·</em>林同學</li><li><em>·</em>黃同學</li><li><em>·</em>張同學</li><li><em>·</em>李同學</li><li><em>·</em>王小明</li></ul><p class="sv-sum js-sum">已到 0 / 14</p>' },
