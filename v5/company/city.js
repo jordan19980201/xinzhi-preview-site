@@ -50,16 +50,27 @@
     var PARK = { x: 0, y: 9, w: 3, d: 4 };
     var FUTURE = { x: 9, y: 0, w: 4, d: 3 };   // 下一個角落：還沒點亮，有塔吊在施工（產品越多，亮的街區越多）
     var SITE = { x: 10, y: 0, w: 2, d: 2 };    // 工地
+    var EXT = 9;   // 城市外圍再鋪一圈地面與遠處建築：放大或移動鏡頭時，畫面邊緣不會是空白
+    var CLIENT = { x: 6.15, y: 4.15, w: .8, d: 1.72, h: 2.7 };   // 客戶公司（T-Vouch 的使用者）：在信誌科技大樓旁邊，會計部在右側那一面
     var buildings = [], trees = [];
     function inRect(x, y, r) { return x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.d; }
     for (var x = 0; x < N; x++) for (var y = 0; y < N; y++) {
-      if (isRoad(x, y) || inRect(x, y, SCHOOL) || inRect(x, y, TOWER) || inRect(x, y, PARK) || inRect(x, y, SITE)) continue;
+      if (isRoad(x, y) || inRect(x, y, SCHOOL) || inRect(x, y, TOWER) || inRect(x, y, PARK) || inRect(x, y, SITE) || (x === 6 && (y === 4 || y === 5))) continue;
       // 塔旁邊留一格廣場，外圈比較矮、中間比較高
       if (inRect(x, y, { x: 6, y: 4, w: 2, d: 4 }) && (x === 7 || y === 7)) { if (rnd() < .5) trees.push({ x: x + .5, y: y + .5, r: .32 + rnd() * .1 }); continue; }
       var center = 1 - Math.hypot(x - 6, y - 6) / 12;
       var nearSchool = x + y > 19 && x > 7 && y > 7;  // 學校前面的房子壓低，不擋住操場
       if (rnd() < .14) { trees.push({ x: x + .5, y: y + .5, r: .3 + rnd() * .12 }); continue; }
       buildings.push({ x: x + .12, y: y + .12, w: .76, d: .76, h: nearSchool ? .5 + rnd() * .6 : .8 + rnd() * (1.2 + center * 3.6), c: P.blds[Math.floor(rnd() * 5)], seed: Math.floor(rnd() * 1e6), roof: rnd() < .3, dark: inRect(x, y, FUTURE) });
+    }
+    buildings.push({ x: CLIENT.x, y: CLIENT.y, w: CLIENT.w, d: CLIENT.d, h: CLIENT.h, c: P.blds[1], seed: 777, roof: false, client: true });
+    buildings.forEach(function (b) { if (Math.floor(b.x) === 6 && Math.floor(b.y) === 6) b.h = Math.min(b.h, 1); });   // 客戶公司前面那棟壓低
+    // 城市外圍：一圈遠處的低矮建築（只畫外形、不畫窗戶），鏡頭拉遠或放大時邊緣不會是一片空地；用另一組亂數，不影響城市本身的配置
+    var rf = rng(97);
+    for (var fx = -EXT; fx < N + EXT; fx++) for (var fy = -EXT; fy < N + EXT; fy++) {
+      if (fx >= 0 && fy >= 0 && fx < N && fy < N) continue;
+      if (rf() < .08) continue;
+      buildings.push({ x: fx + .1, y: fy + .1, w: .8, d: .8, h: .5 + rf() * 1.6, c: P.blds[Math.floor(rf() * 5)], seed: 0, far: true });
     }
     for (var i = 0; i < 16; i++) trees.push({ x: PARK.x + .4 + rnd() * (PARK.w - .8), y: PARK.y + .4 + rnd() * (PARK.d - .8), r: .26 + rnd() * .16 });
 
@@ -107,11 +118,7 @@
     var PATROL_BEATS = { 'bus-in': 1, pings: 1, alert: 1, gather: 1, 'bus-out': 1 }, VOUCH_BEATS = { pile: 1, snap: 1, ai: 1, export: 1, done: 1 };
     var TEACHER = { x: 10.55, y: 12.2, ph: 0 };          // 帶隊老師（金色，手上有手機）
     var BUS_Y = 13.5, bus = { on: false, x: -1.5, from: -1.5, to: 10.3, t0: 0, dur: 4, leaving: false };
-    var FLOOR = { z0: 5.0, z1: 5.35 };                   // 會計部那一層：放在高樓上段（金色腰帶下面），周圍矮樓擋不到
-    var ROUTE = [[6, 5], [8.5, 5], [8.5, 3.5], [13.5, 3.5], [13.5, 5.5], [14.3, 5.5]], ROUTE_LEN = 0;
-    for (i = 1; i < ROUTE.length; i++) ROUTE_LEN += Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]);
     var packets = [], aiParts = [], flashT = -1e9, nextFx = 0;
-    function onRoute(s) { for (var j = 1; j < ROUTE.length; j++) { var a = ROUTE[j - 1], b = ROUTE[j], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (s <= L) return [a[0] + (b[0] - a[0]) * s / L, a[1] + (b[1] - a[1]) * s / L]; s -= L; } return ROUTE[ROUTE.length - 1]; }
     var clouds = [];
     for (i = 0; i < 5; i++) clouds.push({ x: rnd() * 1.4 - .2, y: .05 + rnd() * .35, s: .6 + rnd() * .8, v: .004 + rnd() * .006 });
 
@@ -150,6 +157,7 @@
       }
     }
     function drawBuilding(b) {
+      if (b.far) { var fc = theme === 'dusk' ? P.dim : b.c; box(b.x, b.y, b.w, b.d, b.h, mix(fc, 1.02), mix(fc, .9), mix(fc, .78)); return; }   // 外圍遠處的建築：只畫外形
       if (b.dark) {   // 未點亮：灰暗、窗戶不亮
         var c = P.dim; box(b.x, b.y, b.w, b.d, b.h, mix(c, 1.04), mix(c, .9), mix(c, .78));
         faceWindows(b, b.x, b.y, b.w, b.d, b.h, P.dimWin, P.dimWin); return;
@@ -315,7 +323,8 @@
       }); });
     }
     function drawGround() {
-      for (var x = 0; x < N; x++) for (var y = 0; y < N; y++) {
+      for (var x = -EXT; x < N + EXT; x++) for (var y = -EXT; y < N + EXT; y++) {
+        if (x < 0 || y < 0 || x >= N || y >= N) { poly([iso(x, y), iso(x + 1, y), iso(x + 1, y + 1), iso(x, y + 1)], (x + y) % 2 ? mix(P.walk, .95) : mix(P.walk, .93)); continue; }   // 外圍只鋪地，不畫空馬路
         var road = isRoad(x, y), col;
         if (road) col = P.road;
         else if (inRect(x, y, PARK)) col = (x + y) % 2 ? P.grass : P.grass2;
@@ -353,18 +362,18 @@
       ctx.setLineDash([7 * scale, 6 * scale]); ctx.lineDashOffset = -now / 60; ctx.lineWidth = 2.2 * scale;
       ctx.strokeStyle = alert ? P.alert : P.fence + '.85)'; ctx.stroke(); ctx.restore();
     }
-    function drawPapers() {
+    function drawPapers() {   // 發票從客戶公司飛進信誌科技大樓，到了變成勾勾（平常與「拍一下」）
+      var src = officeWin();
       papers.forEach(function (p) {
-        var t = p.t, x = TOWER.x + TOWER.w - .1, y = TOWER.y + p.u, z = p.z0 + t * 2.4;
-        var g = iso(x + t * .9, y - t * .2, z), s = 7 * scale, a = t < .7 ? 1 : 1 - (t - .7) / .3;
-        ctx.globalAlpha = Math.max(0, a);
-        if (t < .55) { ctx.save(); ctx.translate(g[0], g[1]); ctx.rotate(Math.sin(now / 300 + p.u * 9) * .35); ctx.fillStyle = P.paper; ctx.fillRect(-s * .6, -s * .8, s * 1.2, s * 1.6); ctx.fillStyle = '#c9c9c9'; ctx.fillRect(-s * .4, -s * .45, s * .8, s * .14); ctx.fillRect(-s * .4, -s * .1, s * .6, s * .14); ctx.fillStyle = '#2f6fed'; ctx.fillRect(-s * .4, s * .25, s * .5, s * .14); ctx.restore(); }
-        else { ctx.fillStyle = P.check; ctx.beginPath(); ctx.arc(g[0], g[1], s * .9, 0, 6.28); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 * scale; ctx.beginPath(); ctx.moveTo(g[0] - s * .4, g[1]); ctx.lineTo(g[0] - s * .1, g[1] + s * .32); ctx.lineTo(g[0] + s * .42, g[1] - s * .3); ctx.stroke(); }
+        var t = p.t, s = 7 * scale;
+        if (t < .82) { ctx.globalAlpha = Math.min(1, t * 6); paperAt(arc(src, HQ_IN, t / .82, 1.2 + p.u * .6), s, Math.sin(now / 300 + p.u * 9) * .35); }
+        else { var a = 1 - (t - .82) / .18; checkMark(iso(HQ_IN[0] + .1, HQ_IN[1], HQ_IN[2] + (t - .82) * 2), s * .9, a); }
         ctx.globalAlpha = 1;
       });
     }
     // ---------- 劇情的畫法 ----------
     function drawBus() {
+      ctx.globalAlpha = Math.max(0, Math.min(1, (15.6 - bus.x) / 1.2));
       var x = bus.x - 1, y = BUS_Y - .26, w = 2, d = .52, c = '#F2B705';
       ctx.fillStyle = P.shadow; var sh = iso(bus.x, BUS_Y, 0); ctx.beginPath(); ctx.ellipse(sh[0], sh[1], 34 * scale, 10 * scale, 0, 0, 6.28); ctx.fill();
       box(x, y, w, d, .62, mix(c, 1.15), mix(c, .9), mix(c, .74));
@@ -372,6 +381,7 @@
       poly([iso(x + w, y + .06, .3), iso(x + w, y + d - .06, .3), iso(x + w, y + d - .06, .54), iso(x + w, y + .06, .54)], theme === 'dusk' ? '#ffe3a3' : '#34495e');   // 前擋
       poly([iso(x + .1, y + d, .2), iso(x + w - .1, y + d, .2), iso(x + w - .1, y + d, .25), iso(x + .1, y + d, .25)], '#1b1b1b');
       if (theme === 'dusk') glow(iso(x + w, y + d / 2, .15), 16, 'rgba(255,230,160,');
+      ctx.globalAlpha = 1;
     }
     function drawTeacher() {
       var t = TEACHER; drawPerson(t, '#D4A94E', '#7a5a14');
@@ -392,8 +402,40 @@
       poly([iso(x1, y1 + d1, z0), iso(x1 + w1, y1 + d1, z0), iso(x1 + w1, y1 + d1, z1), iso(x1, y1 + d1, z1)], fill);
       poly([iso(x1 + w1, y1, z0), iso(x1 + w1, y1 + d1, z0), iso(x1 + w1, y1 + d1, z1), iso(x1 + w1, y1, z1)], fill);
     }
-    var target = null;
-    function erpBuilding() { if (target) return target; buildings.forEach(function (b) { if (Math.floor(b.x) === 14 && Math.floor(b.y) === 5) target = b; }); return target || (target = { x: 14.12, y: 5.12, w: .76, d: .76, h: 1.6 }); }
+    // 會計部辦公室（客戶公司）：右側那一面挖一扇大窗，窗內亮燈的房間、辦公桌、會計人員
+    // 月底：桌上的發票越疊越高；拍一下：拿手機拍、閃光燈；匯出：桌上電腦的會計軟體一列一列填進資料
+    var OFF = { X: CLIENT.x + CLIENT.w, a: CLIENT.y + .18, b: CLIENT.y + CLIENT.d - .18, z0: CLIENT.h - 1.05, z1: CLIENT.h - .2 };
+    function officeWin() { return [OFF.X + .02, (OFF.a + OFF.b) / 2, (OFF.z0 + OFF.z1) / 2]; }
+    function drawOffice() {
+      var k = scale, X = OFF.X, a = OFF.a, b = OFF.b, z0 = OFF.z0, z1 = OFF.z1;
+      poly([iso(X, a, z0), iso(X, b, z0), iso(X, b, z1), iso(X, a, z1)], theme === 'dusk' ? '#ffe2a6' : '#fff4dc');
+      poly([iso(X, a, z0), iso(X, b, z0), iso(X - .3, b, z0), iso(X - .3, a, z0)], theme === 'dusk' ? '#c9a46a' : '#e8d8b8');
+      ctx.lineWidth = 2 * k; poly([iso(X, a, z0), iso(X, b, z0), iso(X, b, z1), iso(X, a, z1)], null, 'rgba(212,169,78,.95)');
+      ctx.save(); ctx.translate(0, -z0 * H * scale);
+      var dx = X - .12, dy = a + (b - a) * .62;
+      box(dx - .1, dy - .26, .2, .52, .16, '#8a6a4a', '#6f5238', '#5c4430');
+      var person = { x: X - .1, y: a + (b - a) * .26, ph: Math.sin(now / 400) * .3 };
+      drawPerson(person, '#2e86ab', '#1f5f7a');
+      var rows = beat === 'export' ? Math.min(6, Math.floor((now - beatT0) / 450)) : 0;
+      var top = iso(dx, dy, .17), n = beat === 'pile' ? Math.min(12, 2 + Math.floor((now - beatT0) / 300)) : beat === 'export' ? Math.max(0, 6 - rows) : 3;
+      for (var i = 0; i < n; i++) { var sx = top[0] + Math.sin(i * 1.7) * .9 * k, sy = top[1] - i * 1.3 * k; ctx.fillStyle = i % 2 ? '#f4f1ea' : '#ffffff'; ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = .5 * k; ctx.beginPath(); ctx.moveTo(sx - 6 * k, sy); ctx.lineTo(sx, sy - 3 * k); ctx.lineTo(sx + 6 * k, sy); ctx.lineTo(sx, sy + 3 * k); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+      if (beat === 'export') {
+        var m0 = iso(dx, dy + .18, .17), mw = 20 * k, mh = 14 * k, mx = m0[0] - 2 * k, my = m0[1] - mh - 6 * k;
+        ctx.fillStyle = '#2b2d33'; ctx.fillRect(mx - 1.5 * k, my - 1.5 * k, mw + 3 * k, mh + 3 * k); ctx.fillRect(mx + mw / 2 - 1.5 * k, my + mh, 3 * k, 6 * k);
+        ctx.fillStyle = '#f7fbff'; ctx.fillRect(mx, my, mw, mh);
+        for (var r = 0; r < rows; r++) { ctx.fillStyle = P.check; ctx.fillRect(mx + 2 * k, my + 2 * k + r * 2 * k, mw - 4 * k, 1.1 * k); }
+      }
+      if (beat === 'snap') {
+        var g = iso(person.x, person.y, 0), ph = [g[0] + 4 * k, g[1] - 9 * k];
+        ctx.fillStyle = '#1b1b1b'; ctx.fillRect(ph[0] - 1.5 * k, ph[1] - 2.5 * k, 3 * k, 5 * k);
+        if (now - flashT < 260) glow(ph, 40 * (1 - (now - flashT) / 260) + 8, 'rgba(255,255,255,');
+      }
+      ctx.restore();
+    }
+    // 兩點之間拋物線飛行（世界座標）：客戶公司 ↔ 信誌科技大樓
+    function arc(p0, p1, t, lift) { return iso(p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t, p0[2] + (p1[2] - p0[2]) * t + Math.sin(t * Math.PI) * lift); }
+    var HQ_IN = [TOWER.x + TOWER.w - .15, TOWER.y + TOWER.d * .5, 4.4];
+    function paperAt(g, s, rot) { ctx.save(); ctx.translate(g[0], g[1]); ctx.rotate(rot); ctx.fillStyle = P.paper; ctx.fillRect(-s * .6, -s * .8, s * 1.2, s * 1.6); ctx.fillStyle = '#c9c9c9'; ctx.fillRect(-s * .4, -s * .45, s * .8, s * .14); ctx.fillRect(-s * .4, -s * .1, s * .6, s * .14); ctx.fillStyle = '#2f6fed'; ctx.fillRect(-s * .4, s * .25, s * .5, s * .14); ctx.restore(); }
     function drawBeat() {
       if (!beat) return;
       var k = scale, i;
@@ -414,16 +456,7 @@
         if (!kd.at || now < kd.chk) return; var e = Math.min(1, (now - kd.chk) / 250), h = kidHead(kd);
         checkMark([h[0], h[1] - 6 * k], 3 * k * (e < 1 ? .6 + e * .5 : 1), Math.min(1, e * 2));
       });
-      if (VOUCH_BEATS[beat] && beat !== 'done') {   // 會計部那一層亮起來
-        var pul = .45 + Math.sin(now / 300) * .15; towerFace(FLOOR.z0, FLOOR.z1, 'rgba(212,169,78,' + pul.toFixed(2) + ')');
-      }
-      if (beat === 'pile') {   // 桌上的發票越疊越高
-        var n = Math.min(14, Math.floor((now - beatT0) / 260)), base = iso(TOWER.x + TOWER.w - .32, TOWER.y + TOWER.d - .32, TOWER.h - 1.5 + .08);   // 疊在高樓退縮處的平台上
-        for (i = 0; i < n; i++) { ctx.fillStyle = i % 2 ? '#f4f1ea' : '#ffffff'; ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = .6 * k; var sx = base[0] + Math.sin(i * 1.7) * 1.2 * k, sy = base[1] - i * 1.6 * k; ctx.beginPath(); ctx.moveTo(sx - 7 * k, sy); ctx.lineTo(sx, sy - 3.5 * k); ctx.lineTo(sx + 7 * k, sy); ctx.lineTo(sx, sy + 3.5 * k); ctx.closePath(); ctx.fill(); ctx.stroke(); }
-      }
-      if (beat === 'snap' && now - flashT < 260) {   // 拍照的閃光
-        var f = 1 - (now - flashT) / 260; glow(iso(TOWER.x + TOWER.w - .2, TOWER.y + TOWER.d - .2, (FLOOR.z0 + FLOOR.z1) / 2), 60 * f + 10, 'rgba(255,255,255,');
-      }
+      if (VOUCH_BEATS[beat]) drawOffice();   // 客戶公司的會計部：打開一扇窗，看得到裡面
       if (beat === 'ai') {   // 大樓上方的 AI：發票飛進去、變成綠色勾勾出來
         var c = iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 3), rx = 30 * k, ry = 15 * k;
         glow(c, 46, 'rgba(212,169,78,');
@@ -431,7 +464,7 @@
         ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, 6.28); ctx.stroke(); ctx.setLineDash([]);
         var sweep = Math.sin(now / 420) * rx * .8; ctx.strokeStyle = 'rgba(80,160,255,.9)'; ctx.lineWidth = 1.6 * k; ctx.beginPath(); ctx.moveTo(sweep, -ry * .7); ctx.lineTo(sweep, ry * .7); ctx.stroke();
         ctx.fillStyle = '#D4A94E'; ctx.font = '800 ' + Math.round(13 * k) + 'px "Bricolage Grotesque", system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('AI', 0, 0); ctx.restore();
-        var src = iso(TOWER.x + TOWER.w - .2, TOWER.y + TOWER.d - .2, FLOOR.z1);
+        var ow = officeWin(), src = iso(ow[0], ow[1], ow[2]);
         aiParts.forEach(function (p) {
           var s = 6 * k;
           if (p.t < .55) { var u = p.t / .55, e = u * u * (3 - 2 * u), px = src[0] + (c[0] - src[0]) * e + Math.sin(u * 3.14) * 22 * k * p.side, py = src[1] + (c[1] - src[1]) * e;
@@ -439,13 +472,9 @@
           else { var v = (p.t - .55) / .45; checkMark([c[0] + p.side * (rx + v * 40 * k), c[1] + v * 18 * k], 5 * k, v > .7 ? (1 - v) / .3 : Math.min(1, v * 4)); }
         });
       }
-      if (beat === 'export') {   // 資料沿著馬路送到會計軟體那棟樓
-        ctx.setLineDash([3 * k, 5 * k]); ctx.strokeStyle = 'rgba(79,224,138,.55)'; ctx.lineWidth = 1.6 * k; ctx.beginPath();
-        ROUTE.forEach(function (p, j) { var q = iso(p[0], p[1], .05); if (j) ctx.lineTo(q[0], q[1]); else ctx.moveTo(q[0], q[1]); }); ctx.stroke(); ctx.setLineDash([]);
-        packets.forEach(function (p) { var q = onRoute(p.s), g = iso(q[0], q[1], .18); ctx.fillStyle = P.check; ctx.fillRect(g[0] - 3 * k, g[1] - 2 * k, 6 * k, 4 * k); glow(g, 8, 'rgba(79,224,138,'); });
-        var b = erpBuilding(), pul2 = .5 + Math.sin(now / 280) * .3;
-        ctx.strokeStyle = 'rgba(212,169,78,' + pul2.toFixed(2) + ')'; ctx.lineWidth = 3 * k;
-        poly([iso(b.x, b.y, b.h), iso(b.x + b.w, b.y, b.h), iso(b.x + b.w, b.y + b.d, b.h), iso(b.x, b.y + b.d, b.h)], null, ctx.strokeStyle);
+      if (beat === 'export') {   // 讀好的資料從信誌科技大樓飛回客戶公司
+        var dst = officeWin();
+        for (i = 0; i < 4; i++) { var tt = ((now - beatT0) / 1600 + i / 4) % 1; checkMark(arc(HQ_IN, dst, tt, 1.4), 4.5 * k, tt > .9 ? (1 - tt) * 10 : Math.min(1, tt * 8)); }
       }
       if (beat === 'done') {   // 整棟大樓亮起來
         var pul3 = .22 + Math.sin(now / 500) * .08; towerFace(.95, TOWER.h - 1.55, 'rgba(255,214,120,' + pul3.toFixed(2) + ')');
@@ -536,21 +565,20 @@
         if (back >= 1) { stray.on = false; nextStray = now + 6500; retarget(stray.k); if (opt.onAlert) opt.onAlert(false); }
       }
       if (bus.on) { var bk = Math.min(1, (now - bus.t0) / 1000 / bus.dur), be = 1 - Math.pow(1 - bk, 3); bus.x = bus.from + (bus.to - bus.from) * be; if (bk >= 1 && bus.leaving) bus.on = false; }
-      if (paperMode === 'snap' && now > nextPaper) { papers.push({ t: 0, u: .4 + Math.random() * 1.1, z0: FLOOR.z0 + .1 }); nextPaper = now + 380; }
+      if (paperMode === 'snap' && now > nextPaper) { papers.push({ t: 0, u: Math.random() }); nextPaper = now + 380; }
       if (paperMode === 'snap' && now - flashT > 1600) flashT = now;
       if (beat === 'ai' && now > nextFx) { aiParts.push({ t: 0, u: Math.random(), side: Math.random() < .5 ? -1 : 1 }); nextFx = now + 420; }
       aiParts.forEach(function (p) { p.t += dt / 2.6; }); aiParts = aiParts.filter(function (p) { return p.t < 1; });
-      if (beat === 'export' && now > nextFx) { packets.push({ s: 0 }); nextFx = now + 260; }
-      packets.forEach(function (p) { p.s += dt * 2.2; }); packets = packets.filter(function (p) { return p.s < ROUTE_LEN; });
-      if (paperMode === 'flow' && now > nextPaper) { papers.push({ t: 0, u: .3 + Math.random() * 1.4, z0: 1 + Math.random() * 4.5 }); nextPaper = now + 900; }
-      papers.forEach(function (p) { p.t += dt / 3.2; }); papers = papers.filter(function (p) { return p.t < 1; });
+      if (paperMode === 'flow' && now > nextPaper) { papers.push({ t: 0, u: Math.random() }); nextPaper = now + 1100; }
+      papers.forEach(function (p) { p.t += dt / 2.8; }); papers = papers.filter(function (p) { return p.t < 1; });
       clouds.forEach(function (c) { c.x += c.v * dt; if (c.x > 1.3) c.x = -.3; });
       if (now > nextFlick) { flickerWindows(); nextFlick = now + 700; }
     }
     function camGoal(t) {
       if (!t) return { fx: cw / 2, fy: ch / 2, z: 1, ax: .5, ay: .5, home: true };
       var a = opt.anchor ? opt.anchor(cw, ch) : { x: .5, y: .5 }, p = iso(t.x, t.y, t.z || 0);
-      return { fx: p[0], fy: p[1], z: t.zoom || 2, ax: a.x, ay: a.y, home: false };
+      var zMin = opt.minZoom ? opt.minZoom(cw, ch) : 0;
+      return { fx: p[0], fy: p[1], z: Math.max(t.zoom || 2, zMin), ax: a.x, ay: a.y, home: false };
     }
     function flyTo(t, ms) {
       camTarget = t; var goal = camGoal(t);
@@ -638,7 +666,7 @@
         var prevB = beat; beat = b || null; beatT0 = now; packets = []; aiParts = []; nextFx = 0;
         kids.forEach(function (kd) { delete kd.gx; delete kd.gy; delete kd.at; });
         if (b === 'bus-in') { bus.on = true; bus.leaving = false; bus.from = -1.5; bus.to = 10.3; bus.t0 = now; bus.dur = 3.6; }
-        else if (b === 'bus-out') { bus.on = true; bus.leaving = true; bus.from = bus.x > 0 ? bus.x : 10.3; bus.x = bus.from; bus.to = 17.5; bus.t0 = now + 400; bus.dur = 4.5; }
+        else if (b === 'bus-out') { bus.on = true; bus.leaving = true; bus.from = bus.x > 0 ? bus.x : 10.3; bus.x = bus.from; bus.to = 15.4; bus.t0 = now + 400; bus.dur = 4; }   /* 開到城市邊緣就淡出，不開進外圍的建築群 */
         else if (b && PATROL_BEATS[b]) { if (!bus.on) { bus.on = true; bus.leaving = false; bus.from = bus.to = bus.x = 10.3; bus.t0 = now; bus.dur = .01; } }
         else { bus.on = false; }
         if (b === 'gather') {
@@ -651,26 +679,27 @@
       },
       // 劇情裡的東西現在在螢幕的哪裡（給故事的標籤用）
       where: function (name) {
-        var b = erpBuilding(), p = name === 'bus' ? (bus.on ? iso(bus.x, BUS_Y, 1.1) : null)
+        var p = name === 'bus' ? (bus.on ? iso(bus.x, BUS_Y, 1.1) : null)
           : name === 'teacher' ? iso(TEACHER.x, TEACHER.y, 1.05)
           : name === 'stray' ? (stray.on ? iso(stray.k.x, stray.k.y, 1.05) : null)
           : name === 'class' ? iso(FIELD.cx, FIELD.cy, 1.2)
-          : name === 'floor' ? iso(TOWER.x + TOWER.w - .2, TOWER.y + TOWER.d - .2, FLOOR.z1 + .9)
+          : name === 'floor' || name === 'client' ? iso(OFF.X, (OFF.a + OFF.b) / 2, CLIENT.h + .8)
           : name === 'ai' ? iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 4.1)
-          : name === 'erp' ? iso(b.x + b.w / 2, b.y + b.d / 2, b.h + .5)
+          : name === 'erp' ? iso(OFF.X, (OFF.a + OFF.b) / 2, CLIENT.h + .8)
+          : name === 'hq' ? iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 2)
           : name === 'tower' ? iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 2) : null;
         if (!p) return null; var q = camXY(p); return { x: q[0], y: q[1] };
       },
       // 故事用的地點（世界座標）
-      places: { field: { x: FIELD.cx, y: FIELD.cy }, gate: { x: FIELD.cx + 2.0, y: FIELD.cy + 2.1 }, school: { x: SCHOOL.x + 2, y: SCHOOL.y + 2 }, tower: { x: TOWER.x + TOWER.w / 2, y: TOWER.y + TOWER.d / 2, h: TOWER.h }, site: { x: SITE.x + 1, y: SITE.y + 1 } },
+      places: { field: { x: FIELD.cx, y: FIELD.cy }, gate: { x: FIELD.cx + 2.0, y: FIELD.cy + 2.1 }, school: { x: SCHOOL.x + 2, y: SCHOOL.y + 2 }, tower: { x: TOWER.x + TOWER.w / 2, y: TOWER.y + TOWER.d / 2, h: TOWER.h }, client: { x: CLIENT.x + CLIENT.w / 2, y: CLIENT.y + CLIENT.d / 2, h: CLIENT.h }, site: { x: SITE.x + 1, y: SITE.y + 1 } },
       // 城市只在畫面上看得到時才動（省電）
       _debug: function () { return { cars: cars, light: light, ROADS: ROADS, CAR_L: CAR_L, stray: stray, story: story }; },  // 給自動測試讀交通狀態
       setVisible: function (v) { visible = v; if (v && !document.hidden) start(); else stop(); },
       setTheme: function (t) { theme = t; P = PAL[t]; lit = {}; if (!running) draw(); },
       // 給 HTML 標籤用：產品地點的螢幕座標（CSS px）
       spots: function () {
-        var s = camXY(iso(SCHOOL.x + 1.4, SCHOOL.y + 1.2, 2.4)), t = camXY(iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 2.2)), n = camXY(iso(SITE.x + .35, SITE.y + .35, 5.6)), g = camXY(iso(FIELD.cx + 2.0, FIELD.cy + 2.1, 1.2));
-        return { patrol: { x: s[0], y: s[1] }, vouch: { x: t[0], y: t[1] }, next: { x: n[0], y: n[1] }, stray: { x: g[0], y: g[1] }, home: cam.home && !camAnim };
+        var s = camXY(iso(SCHOOL.x + 1.4, SCHOOL.y + 1.2, 2.4)), t = camXY(iso(CLIENT.x + CLIENT.w / 2, CLIENT.y + CLIENT.d / 2, CLIENT.h + 1.2)), hq = camXY(iso(TOWER.x + TOWER.w / 2, TOWER.y + TOWER.d / 2, TOWER.h + 2.2)), n = camXY(iso(SITE.x + .35, SITE.y + .35, 5.6)), g = camXY(iso(FIELD.cx + 2.0, FIELD.cy + 2.1, 1.2));
+        return { patrol: { x: s[0], y: s[1] }, vouch: { x: t[0], y: t[1] }, hq: { x: hq[0], y: hq[1] }, next: { x: n[0], y: n[1] }, stray: { x: g[0], y: g[1] }, home: cam.home && !camAnim };
       }
     };
   }

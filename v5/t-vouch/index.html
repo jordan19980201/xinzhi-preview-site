@@ -205,6 +205,7 @@
     </div>
     <canvas class="city" aria-hidden="true"></canvas>
     <button class="pin" type="button" data-story="vouch"><span class="tile t-vouch" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span class="txt"><b>會計部・月底</b><span>點我看一張發票的旅程</span></span></button>
+    <p class="pin-hq" aria-hidden="true">信誌科技</p>
     <section class="story" hidden aria-labelledby="story-title"></section>
   </section>
 
@@ -287,12 +288,12 @@
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   V5.init({
     spot: 'vouch',
-    home: function (P) { return { x: P.tower.x, y: P.tower.y, z: 3.2, zoom: 1.9 }; },
+    home: function (P) { return { x: P.client.x - .4, y: P.client.y, z: 3.4, zoom: 1.9 }; },   // 客戶公司（會計部）＋旁邊的信誌科技大樓
     cams: function (P) { return {
-      try: { x: P.tower.x + .8, y: P.tower.y, z: 5, zoom: 2.4, papers: 'flow' },
-      how: { x: P.tower.x, y: P.tower.y, z: 2.6, zoom: 1.7, papers: 'flow' },
+      try: { x: P.client.x + .3, y: P.client.y, z: 2.2, zoom: 2.6, papers: 'flow' },
+      how: { x: P.client.x - .5, y: P.client.y, z: 3.5, zoom: 1.8, papers: 'flow' },
       pricing: { x: 7, y: 7, z: 0, zoom: 1.1 },
-      go: { x: P.tower.x, y: P.tower.y, z: 2.4, zoom: 2 }
+      go: { x: P.client.x - .4, y: P.client.y, z: 3.4, zoom: 1.9 }
     }; },
     stories: function (P) { var s = window.V5Stories(P, 't-vouch'); return { vouch: s.vouch }; }
   });

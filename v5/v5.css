@@ -53,7 +53,7 @@ html[data-theme="paper"] .crumb .lg-light { display: block; }
 .top nav .login { box-shadow: inset 0 0 0 1.5px var(--rule); border-radius: 999px; margin-left: var(--s-2); }
 
 /* 進度條（ui-ux-pro-max：Horizontal Scroll Journey 要有進度指示） */
-.progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: var(--z-pager); background: var(--rule); }
+.progress { position: fixed; left: 0; right: 0; top: 0; height: 5px; z-index: var(--z-pager); background: var(--rule); }
 .progress i { display: block; height: 100%; background: var(--hi); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 500ms var(--ease); }
 body.in-story .progress { opacity: 0; }
 
@@ -119,8 +119,9 @@ html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(90de
 .t-patrol { background: linear-gradient(135deg, #F2A516, #D9690B); }
 .t-vouch { background: #17181a; box-shadow: inset 0 0 0 1px oklch(1 0 0 / .18); }
 
+.pin-hq { position: absolute; z-index: 2; left: 0; top: 0; transform: translate(-50%, -100%); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; letter-spacing: .06em; background: #D4A94E; color: #1d1a12; white-space: nowrap; pointer-events: none; will-change: translate; box-shadow: 0 8px 18px -10px oklch(0 0 0 / .5); }   /* 信誌科技大樓 */
 /* 故事模式：樣式在 story.css；這裡只讓首頁文字、標籤、翻頁鈕、章節選單退場 */
-body.in-story .p-hello .copy, body.in-story .pin, body.in-story .pager, body.in-story .top nav { opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 0s 300ms; }
+body.in-story .p-hello .copy, body.in-story .pin-hq, body.in-story .pin, body.in-story .pager, body.in-story .top nav { opacity: 0; visibility: hidden; transition: opacity 300ms ease, visibility 0s 300ms; }
 .p-hello .copy, .pager, .top nav { transition: opacity 400ms ease 300ms; }
 
 /* ---------- 共用：白色島 ---------- */
@@ -201,10 +202,14 @@ body.in-story .p-hello .copy, body.in-story .pin, body.in-story .pager, body.in-
 /* ---------- 手機：每頁一個畫面裝得下，不上下捲（使用者 2026-11-19） ----------
    重點留下、補充說明在手機上省略；電腦版不受影響。開場的文字固定在下方，城市自動填滿上方的空間。 */
 @media (max-width: 640px) {
-  .page { padding: 74px var(--pad-x) 80px; }
+  .page { padding: 84px var(--pad-x) 80px; }
   main > .page { overflow-y: hidden; }
   main > .page:not(.p-hello) { row-gap: clamp(10px, 2vh, 18px); column-gap: 0; }
   .p-hello .copy { position: absolute; left: 0; right: 0; top: auto; bottom: 72px; height: auto; margin: 0; padding: 28px var(--pad-x) 10px; }
+  /* 城市延伸到整支手機：文字區塊改成半透明底色，城市在文字後面也看得到 */
+  html .p-hello .copy { background: linear-gradient(180deg, color-mix(in oklch, var(--bg) 0%, transparent) 0, color-mix(in oklch, var(--bg) 84%, transparent) 40px, color-mix(in oklch, var(--bg) 90%, transparent) 100%); }
+  html:not([data-theme="paper"]) .p-hello .copy { background: linear-gradient(180deg, oklch(0.16 0.01 260 / 0) 0, oklch(0.16 0.01 260 / .84) 40px, oklch(0.16 0.01 260 / .9) 100%); }
+  .pin-hq { display: none; }   /* 手機開場畫面小，信誌科技標籤先不放（故事裡會出現） */
   .p-hello .brand { font-size: 1rem; gap: 10px; }
   .p-hello .brand .mark { width: 34px; height: 34px; border-radius: 9px; }
   .p-hello .brand .mark svg { width: 18px; height: 18px; }

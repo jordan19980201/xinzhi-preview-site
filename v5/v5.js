@@ -46,7 +46,7 @@
 
     // ---------- 開場城市：先看到整座城，再飛進這個產品的角落 ----------
     var hello = document.querySelector('.p-hello'), copy = hello.querySelector('.copy');
-    var pin = hello.querySelector('.pin'), toast = hello.querySelector('.toast');
+    var pin = hello.querySelector('.pin'), toast = hello.querySelector('.toast'), hqTag = hello.querySelector('.pin-hq');
     var storyId = null, curId = 'hello';
     // 城市是整個網站的背景：畫布移到所有頁面後面，每一頁都看得到它在動
     var canvas = hello.querySelector('.city'); document.body.insertBefore(canvas, main);
@@ -54,6 +54,7 @@
       theme: document.documentElement.dataset.theme === 'paper' ? 'day' : 'dusk',
       frame: function (w, h) { return w < 641 ? { x: 4, y: 64, w: w - 8, h: Math.max(120, copy.getBoundingClientRect().top - 72) } : w < 961 ? { x: 4, y: 64, w: w - 8, h: h * .4 } : { x: w * .4, y: 70, w: w * .6, h: h - 110 }; },
       onAlert: function (on) { if (toast) toast.classList.toggle('on', on); },
+      minZoom: function (w) { return w < 641 ? 1.8 : 0; },   // 手機：城市放大填滿畫面
       onLayout: placePin, onFrame: function () { placePin(); if (story) story.frame(); },
       anchor: function (w, h) {
         if (w < 961) return { x: .5, y: storyId ? .24 : w < 641 && curId === 'hello' ? (64 + copy.getBoundingClientRect().top) / 2 / h : .27 };   // 手機：城市佔全螢幕，焦點放在文字上方的空間
@@ -79,6 +80,7 @@
       var s = city.spots();
       var st = hello.scrollTop;   // 手機開場頁可以往下捲：加上捲動距離，標籤才會一直貼在固定不動的城市上
       if (pin) pin.style.translate = s[cfg.spot].x.toFixed(2) + 'px ' + ((st > 0 ? s[cfg.spot].y : Math.max((innerWidth < 641 ? 64 : 76) + pin.offsetHeight + 4, s[cfg.spot].y)) + st).toFixed(2) + 'px';   // 標籤不要壓到頂列
+      if (hqTag) hqTag.style.translate = s.hq.x.toFixed(2) + 'px ' + (s.hq.y + st).toFixed(2) + 'px';
       if (toast) toast.style.translate = s.stray.x.toFixed(2) + 'px ' + (s.stray.y + st).toFixed(2) + 'px';
     }
     // 進場：先停在整座城一下，再飛進角落（減少動態時直接到位）
