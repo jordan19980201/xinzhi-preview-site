@@ -8,6 +8,19 @@
 ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) { document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false }); });
 document.addEventListener('touchmove', function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });</script>
 <meta name="robots" content="noindex">
+<!-- 分享縮圖（LINE、iMessage、FB）：1200×630。上正式網站時把網址換成正式網域 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="信誌科技 T-Intelligence">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="信誌科技 T-Intelligence｜把複雜的事，變得很簡單">
+<meta property="og:description" content="清大育成的研發團隊。T-Patrol 平安福讓帶隊的人知道團體裡每個人在哪；T-Vouch 讓會計不用再一張一張輸入發票。">
+<meta property="og:url" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/company/">
+<meta property="og:image" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/company/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="信誌科技 T-Intelligence｜把複雜的事，變得很簡單">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/company/og.jpg">
 <link rel="icon" type="image/png" href="../favicon.png">
 <script>
   // 配色：網址指定 ?theme= 就照它；沒指定就看訪客自己的時間：早上 6 點到下午 6 點前是白天（紙白），其他時間是傍晚（夜金）。

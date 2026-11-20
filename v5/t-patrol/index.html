@@ -8,6 +8,19 @@
 ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) { document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false }); });
 document.addEventListener('touchmove', function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });</script>
 <meta name="robots" content="noindex">
+<!-- 分享縮圖（LINE、iMessage、FB）：1200×630。上正式網站時把網址換成正式網域 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="信誌科技 T-Intelligence">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="T-Patrol 平安福｜團體活動即時定位安全管理系統">
+<meta property="og:description" content="團體活動即時定位：成員戴上識別證套或手環，帶隊者在手機上隨時看得到、一鍵點名。2026 年 27 天活動、零事故。">
+<meta property="og:url" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/t-patrol/">
+<meta property="og:image" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/t-patrol/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="T-Patrol 平安福｜團體活動即時定位安全管理系統">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jordan19980201.github.io/xinzhi-preview-site/v5/t-patrol/og.jpg">
 <link rel="icon" type="image/png" href="../favicon.png">
 <script>
   // 配色：?theme= 優先；沒指定就看訪客的時間（06:00–17:59 白天紙白，其他傍晚夜金）。和官網同一套。
