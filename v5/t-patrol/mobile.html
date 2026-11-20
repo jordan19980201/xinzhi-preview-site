@@ -2,7 +2,11 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>html { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }</style>
+<script>/* 手機不能雙指放大：iOS Safari 不理 user-scalable=no，要另外擋住縮放手勢 */
+['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) { document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false }); });
+document.addEventListener('touchmove', function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });</script>
 <title>T-Patrol 平安福 新版 | 手機版預覽</title>
 <style>
   /* 只用來在電腦上用手機尺寸（390×844）看預覽，不是網站的一部分 */
