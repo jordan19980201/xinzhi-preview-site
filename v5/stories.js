@@ -9,30 +9,30 @@
     return {
       patrol: { title: '<b>T-Patrol 平安福</b>　校外教學的一天', endTo: co ? null : 'device', endLabel: co ? '回到城市' : '看裝置',
         chapters: [
-          { t: '08:00', at: day('08:00'), h: '七年一班，校外教學出發。', p: '每個學生戴上識別證套或手環。學生證直接放進證套，和平常一樣掛在胸前。', cam: SCHOOL_CAM, beat: 'bus-in', marks: [{ at: 'bus', t: '七年一班・出發', delay: 3000 }],
+          { t: '08:00', at: day('08:00'), h: '七年一班 校外教學出發', p: '每個學生戴上識別證套或手環。學生證直接放進證套，和平常一樣掛在胸前。', cam: SCHOOL_CAM, beat: 'bus-in', marks: [{ at: 'bus', t: '七年一班・出發', delay: 3000 }],
             vis: '<div class="sv-devs"><img src="../../t-patrol/assets/device-card.webp" alt="識別證套式定位裝置"><img src="../../t-patrol/assets/device-band.webp" alt="手環式定位裝置"></div>' },
-          { t: '10:30', at: day('10:30'), h: '自由活動，全班在哪一眼看完。', p: '老師手機上的地圖即時顯示每個學生的位置，不用一個一個打電話。', cam: SCHOOL_CAM, beat: 'pings', marks: [{ at: 'teacher', t: '老師的手機：14 / 14 在範圍內', cls: 'ok', delay: 1200 }],
+          { t: '10:30', at: day('10:30'), h: '自由活動 全班在哪一眼看完', p: '老師手機上的地圖即時顯示每個學生的位置，不用一個一個打電話', cam: SCHOOL_CAM, beat: 'pings', marks: [{ at: 'teacher', t: '老師的手機：14 / 14 在範圍內', cls: 'ok', delay: 1200 }],
             vis: '<p class="sv-big"><span class="ok">14</span> / 14<small>七年一班・在範圍內</small></p>' },
-          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了。', p: '在管理後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知。', cam: SCHOOL_CAM, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
+          { t: '11:12', at: day('11:12'), h: '王小明走出範圍了', p: '在管理後台設好電子圍籬，學生一離開範圍，老師手機馬上收到通知', cam: SCHOOL_CAM, stray: 'out', beat: 'alert', marks: [{ at: 'stray', t: '王小明 離開範圍', cls: 'alert', delay: 1500 }, { at: 'teacher', t: '老師手機馬上收到通知', delay: 1900 }],
             vis: '<div class="sv-alert" role="img" aria-label="手機通知：王小明已離開設定範圍"><i></i><b>T-Patrol 平安福</b><time>11:12</time><span>王小明 已離開設定範圍</span></div>' },
-          { t: '11:30', at: day('11:30'), h: '集合，按一下就點完名。', p: '誰到了、誰還沒到，秒看清楚。王小明也回來了。', cam: SCHOOL_CAM, stray: 'back', roll: true, beat: 'gather', marks: [{ at: 'teacher', t: '一鍵點名：全員到齊', cls: 'ok', delay: 4200 }],
+          { t: '11:30', at: day('11:30'), h: '集合 按一下就點完名', p: '誰到了、誰還沒到，秒看清楚。王小明也回來了。', cam: SCHOOL_CAM, stray: 'back', roll: true, beat: 'gather', marks: [{ at: 'teacher', t: '一鍵點名：全員到齊', cls: 'ok', delay: 4200 }],
             vis: '<ul class="sv-roll js-roll"><li><em>·</em>陳同學</li><li><em>·</em>林同學</li><li><em>·</em>黃同學</li><li><em>·</em>張同學</li><li><em>·</em>李同學</li><li><em>·</em>王小明</li></ul><p class="sv-sum js-sum">已到 0 / 14</p>' },
-          { t: '17:30', at: 1, h: '平安回家。', p: '活動軌跡保留 6 個月，事後有據。2026 年，T-Patrol 陪七所學校出門：', cam: SCHOOL_CAM, beat: 'bus-out', marks: [{ at: 'bus', t: '平安回家', cls: 'ok', delay: 500 }],
+          { t: '17:30', at: 1, h: '平安回家', p: '活動軌跡保留 6 個月，事後有據。2026 年，T-Patrol 陪七所學校出門：', cam: SCHOOL_CAM, beat: 'bus-out', marks: [{ at: 'bus', t: '平安回家', cls: 'ok', delay: 500 }],
             vis: '<div class="sv-stats"><div><b>7</b><span>所學校</span></div><div><b>27</b><span>天活動</span></div><div><b>0</b><span>件事故</span></div></div>' +
               (co ? '<div class="sv-cta"><a class="btn" href="?subject=T-Patrol#talk" data-close-to="talk">預約免費試辦</a><a class="go" href="../t-patrol/">看 T-Patrol 網站</a></div>'
                   : '<div class="sv-cta"><a class="btn" href="#start" data-close-to="start">預約免費試辦</a></div>') }
         ] },
       vouch: { title: '<b>T-Vouch</b>　一張發票的旅程', endTo: co ? null : 'try', endLabel: co ? '回到城市' : '自己試一次',
         chapters: [
-          { t: '月底', at: 0, h: '會計部，一疊發票等著輸入。', p: '日期、統編、金額，一張一張打進系統，又慢又容易出錯。', cam: { x: P.client.x + .3, y: P.client.y, z: 2.2, zoom: 2.9 }, beat: 'pile', marks: [{ at: 'client', t: '客戶公司・會計部：一疊發票等著輸入', delay: 1100 }],
-            vis: '<div class="sv-pile" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="sv-note">示意：一個月下來，常常是幾百張。</p>' },
-          { t: '拍一下', at: .25, h: '拍照上傳，一張或一整疊。', p: '用手機拍，或一次上傳一整疊，AI 同步處理。', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'snap', marks: [{ at: 'client', t: '拍一下，上傳給 T-Vouch', delay: 900 }, { at: 'hq', t: 'T-Intelligence', delay: 1300 }],
+          { t: '月底', at: 0, h: '會計部 一疊發票等著輸入', p: '日期、統編、金額，一張一張打進系統，又慢又容易出錯', cam: { x: P.client.x + .3, y: P.client.y, z: 2.2, zoom: 2.9 }, beat: 'pile', marks: [{ at: 'client', t: '客戶公司・會計部：一疊發票等著輸入', delay: 1100 }],
+            vis: '<div class="sv-pile" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="sv-note">示意：一個月下來，常常是幾百張</p>' },
+          { t: '拍一下', at: .25, h: '拍照上傳 一張或一整疊', p: '用手機拍，或一次上傳一整疊，AI 同步處理', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'snap', marks: [{ at: 'client', t: '拍一下，上傳給 T-Vouch', delay: 900 }, { at: 'hq', t: 'T-Intelligence', delay: 1300 }],
             vis: '<p class="sv-chips"><span>JPG</span><span>PNG</span><span>PDF</span></p>' },
-          { t: 'AI 讀出來', at: .5, h: '欄位自己跑出來。', p: 'AI 擷取發票號碼、日期、統編、金額，你只要確認。', cam: { x: P.tower.x + .4, y: P.tower.y, z: 6, zoom: 1.6 }, ocr: true, beat: 'ai', marks: [{ at: 'ai', t: 'T-Intelligence：AI 讀出日期、統編、金額', cls: 'ok', delay: 1200 }],
+          { t: 'AI 讀出來', at: .5, h: '欄位自己跑出來', p: 'AI 擷取發票號碼、日期、統編、金額，你只要確認', cam: { x: P.tower.x + .4, y: P.tower.y, z: 6, zoom: 1.6 }, ocr: true, beat: 'ai', marks: [{ at: 'ai', t: 'T-Intelligence：AI 讀出日期、統編、金額', cls: 'ok', delay: 1200 }],
             vis: '<div class="sv-ocr js-ocr">' + V5Invoice({ ocr: true }) + '<dl><div><dt>日期</dt><dd>2026/10/16</dd></div><div><dt>賣方統編</dt><dd>53880413</dd></div><div><dt>金額</dt><dd>NT$ 1,280</dd></div></dl></div><p class="sv-note">示意資料，非實際系統畫面</p>' },
-          { t: '匯出', at: .75, h: '確認後，直接進會計軟體。', p: '匯出 CSV，或用 RESTful API 接進現有的財務系統。', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'export', marks: [{ at: 'client', t: '回到客戶自己的會計軟體', delay: 1200 }],
+          { t: '匯出', at: .75, h: '確認後 直接進會計軟體', p: '匯出 CSV，或用 RESTful API 接進現有的財務系統', cam: { x: P.client.x - .3, y: P.client.y, z: 3.3, zoom: 2.2 }, beat: 'export', marks: [{ at: 'client', t: '回到客戶自己的會計軟體', delay: 1200 }],
             vis: '<table class="sv-csv"><thead><tr><th>日期</th><th>號碼</th><th>總計</th><th></th></tr></thead><tbody><tr><td>10/16</td><td>AB-12345678</td><td>1,280</td><td>✓</td></tr><tr><td>10/16</td><td>CD-20481937</td><td>360</td><td>✓</td></tr><tr><td>10/17</td><td>收據</td><td>2,450</td><td>✓</td></tr></tbody></table><p class="sv-note">→ 2026-10.csv（示意）</p>' },
-          { t: '開始', at: 1, h: '免費方案，每月 50 張。', p: '不用信用卡。付費方案月費 NT$590 起，年繳只付 10 個月。', cam: { x: P.tower.x, y: P.tower.y, z: 5.4, zoom: 1.45 }, beat: 'done', marks: [{ at: 'tower', t: '每月 50 張免費', cls: 'ok', delay: 900 }],
+          { t: '開始', at: 1, h: '免費方案 每月 50 張', p: '不用信用卡。付費方案月費 NT$590 起，年繳只付 10 個月。', cam: { x: P.tower.x, y: P.tower.y, z: 5.4, zoom: 1.45 }, beat: 'done', marks: [{ at: 'tower', t: '每月 50 張免費', cls: 'ok', delay: 900 }],
             vis: '<div class="sv-cta"><a class="btn" href="https://app.t-vouch.com/register">免費開始使用</a>' + (co ? '<a class="go" href="../t-vouch/">看 T-Vouch 網站</a>' : '<a class="go" href="#pricing" data-close-to="pricing">看方案</a>') + '</div>' }
         ] }
     };
